@@ -1,0 +1,45 @@
+import formatPrice from "@/utils/formatPrice";
+
+export default function ProductDetail({product}){
+    return(
+        <section className="m-12 rounded-[5px] border border-gray-200 bg-white p-6 shadow">
+            <div className="grid gap-8 md:grid-cols-[45%_1fr]">
+                <div className="flex min-h-80 items-center justify-center rounded-[5px] border border-gray-100 bg-gray-50 p-6">
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="max-h-96 max-w-full object-contain"
+                    />
+                </div>
+
+                <div className="flex flex-col justify-center">
+                    <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-orange-500">
+                        {product.category}
+                    </p>
+
+                    <h1 className="text-3xl font-bold text-[#131921]">
+                        {product.name}
+                    </h1>
+
+                    <p className="mt-4 text-2xl font-semibold text-red-400">
+                        {formatPrice(product.price)}
+                    </p>
+
+                    <p className="mt-6 text-gray-600">
+                        Read, collect, and manage this ebook from your amazin store library.
+                    </p>
+
+                    <div className="mt-8 flex flex-wrap gap-3">
+                        <button className="rounded-[5px] bg-orange-400 px-6 py-3 font-semibold text-[#131921] transition duration-300 hover:bg-orange-500">
+                            Add to cart
+                        </button>
+
+                        <button className="rounded-[5px] border border-[#131921] px-6 py-3 font-semibold text-[#131921] transition duration-300 hover:bg-[#131921] hover:text-white">
+                            Buy now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
