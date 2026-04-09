@@ -1,9 +1,20 @@
+"use client"
 import ProductDetail from "@/components/shop/product/ProductDetail";
-import { products } from "@/data/products";
+import { getDetailProducts } from "@/services/productServices";
+import { useParams } from "next/navigation";
+import { useState,useEffect } from "react";
 
-export default async function Page({params}) {
-    const {slug}= await params;
-    const item=products.find(e=>e.id==slug);
-    if(!item) return <div>Không thấy sản phẩm có id {slug} </div>;
-    return <ProductDetail product={item} />;
+export default function Page() {
+    const {slug}=useParams();
+    const [product,setProd]=useState({});
+    useEffect(()=>{
+        async function fetchDetailProd(){
+            let api = await getDetailProducts(slug);
+            console.log(api);
+        }
+    },[]);
+    
+    return <>
+    {/* <ProductDetail product={product} /> */}
+    </>;
 }
