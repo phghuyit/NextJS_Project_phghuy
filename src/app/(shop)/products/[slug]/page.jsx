@@ -6,15 +6,31 @@ import { useState,useEffect } from "react";
 
 export default function Page() {
     const {slug}=useParams();
+    const [error,setError] = useState(null);
+    const [loading,setLoading] = useState(true);
     const [product,setProd]=useState({});
     useEffect(()=>{
         async function fetchDetailProd(){
-            let api = await getDetailProducts(slug);
-            console.log(api);
+            try{
+                let api = await getDetailProducts(slug);
+                console.log(api.data.data)
+                setProd(api.data.data);
+            }catch(error){
+                console.log("Loi khong load duoc");
+                setError("Loi fetch api");
+            }finally{
+                setLoading(false);
+            }
         }
+        fetchDetailProd();
     },[]);
-    
-    return <>
-    {/* <ProductDetail product={product} /> */}
-    </>;
+    if(error){
+        return(<h1>{error}</h1>);
+    }
+    if(loading){
+        return(<h1 className="text-center">Loading Chi tiet Sản Phẩm...</h1>)
+    }
+    return(<>
+    <ProductDetail product={product} />
+    </>); 
 }

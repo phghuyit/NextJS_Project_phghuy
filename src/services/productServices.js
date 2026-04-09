@@ -22,6 +22,6 @@ export function getProducts(){
     return axiosClient.get("/products");
 }
 
-export function getDetailProducts({slug}){
-    return axiosClient.get(`/products/${slug}`);
+export function getDetailProducts(slug){
+    return axiosClient.get(`/showDetails/${slug}`);
 }

@@ -1,13 +1,17 @@
 import formatPrice from "@/utils/formatPrice";
+import Image from "next/image";
 
+const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
 export default function ProductDetail({product}){
     return(
         <section className="m-12 rounded-[5px] border border-gray-200 bg-white p-6 shadow">
             <div className="grid gap-8 md:grid-cols-[45%_1fr]">
                 <div className="flex min-h-80 items-center justify-center rounded-[5px] border border-gray-100 bg-gray-50 p-6">
-                    <img
-                        src={product.image}
-                        alt={product.name}
+                    <Image
+                        src={product}
+                        alt={product.product_name}
+                        width={300}
+                        height={300}
                         className="max-h-96 max-w-full object-contain"
                     />
                 </div>
@@ -18,7 +22,7 @@ export default function ProductDetail({product}){
                     </p>
 
                     <h1 className="text-3xl font-bold text-[#131921]">
-                        {product.name}
+                        {product.product_name}
                     </h1>
 
                     <p className="mt-4 text-2xl font-semibold text-red-400">
@@ -26,7 +30,7 @@ export default function ProductDetail({product}){
                     </p>
 
                     <p className="mt-6 text-gray-600">
-                        Read, collect, and manage this ebook from your amazin store library.
+                        {product.description}
                     </p>
 
                     <div className="mt-8 flex flex-wrap gap-3">

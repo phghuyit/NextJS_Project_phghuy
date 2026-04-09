@@ -6,7 +6,7 @@ const API_CONFIG ={
         "Accept":"application/json"
         // "Authorization": `Bearer ${token}`
     },
-    TIMEOUT: 10000
+    TIMEOUT: 10000,
 };
 
 export default API_CONFIG;
