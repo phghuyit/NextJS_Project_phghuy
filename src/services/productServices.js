@@ -25,3 +25,21 @@ export function getProducts(){
 export function getDetailProducts(slug){
     return axiosClient.get(`/showDetails/${slug}`);
 }
+
+export async function getProductsByPageSize(params={}){
+    const res= await axiosClient.get("/productsByPageSize",{params});
+    return res.data;
+}
+
+export async function getNewProducts(param=4){
+    const res= await axiosClient.get(`/newProducts/${param}`);
+    return res.data;
+}
+export async function getSaleProducts(param=4){
+    const res= await axiosClient.get(`/saleProducts/${param}`);
+    return res.data;
+}
+export async function getHotProducts(param=4){
+    const res= await axiosClient.get(`/hotProducts/${param}`);
+    return res.data;
+}

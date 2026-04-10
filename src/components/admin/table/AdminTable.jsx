@@ -1,7 +1,6 @@
 "use client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare,faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { products } from "@/data/products";
 import formatPrice from './../../../utils/formatPrice';
 export default function AdminTable({ columns, data,onEdit,onDel }) {
   return (
@@ -15,7 +14,7 @@ export default function AdminTable({ columns, data,onEdit,onDel }) {
         </tr>
       </thead>
       <tbody>
-        {products.map(row => (
+        {data.map(row => (
           <tr key={row.id} className="text-gray-700 transition duration-200 hover:bg-orange-50">
             {columns.map(col => (
               col.key=="price"?<td key={col.key} className="border border-gray-200 px-4 py-3">{formatPrice(row[col.key])}</td>:<td key={col.key} className="border border-gray-200 px-4 py-3">{row[col.key]}</td>
