@@ -37,7 +37,7 @@ export default function Page() {
     return(<h1 className="text-center capitialize">Loading Trang chủ...</h1>)
   }
   return (
-      <main className="bg-white">
+      <div className="w-full">
         <section className="bg-orange-50 py-12">
           <div className="mx-auto max-w-7xl px-6">
             <div className="max-w-2xl">
@@ -73,6 +73,6 @@ export default function Page() {
             products={newProd}
           />
         </section>
-      </main>
+      </div>
     );
 } 

@@ -1,10 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { adminMenu } from "@/data/adminMenu";
-
 export default function Header() {
   return (
     <header className="text-white">

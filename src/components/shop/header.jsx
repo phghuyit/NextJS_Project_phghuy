@@ -1,8 +1,7 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { shopMenu } from '@/data/menu';
-import {
-  faMagnifyingGlass
-} from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 export default function Header() {
   return (
     <header className="text-white">
@@ -14,25 +13,26 @@ export default function Header() {
         </div>
         
         {/* <!-- Search --> */}
-        <div className="flex flex-1">
+        <form action="" className="flex flex-1">
             <input 
                 type="text" 
                 placeholder="Search Kindle eBooks"
                 className="w-full px-4 py-2 text-black rounded-l-md focus:outline-none bg-white"
             />
             <button className="bg-orange-400 hover:bg-orange-500 px-5 rounded-r-md text-black font-semibold">
-                 <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4"/>
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4"/>
             </button>
-        </div>
+        </form>
+       
 
         {/* <!-- Menu Right --> */}
         <div className="hidden md:flex items-center gap-6 text-sm">
 
             <div className="hover:underline cursor-pointer">
-                <a href="#">
+                <Link href="/login">
                     <p className="text-xs">Hello, Sign in</p>
                     <p className="font-semibold">Account & Lists</p>
-                </a>
+                </Link>
             </div>
 
             <div className="hover:underline cursor-pointer">
@@ -41,7 +41,7 @@ export default function Header() {
             </div>
 
             <div className="relative cursor-pointer">
-                <a href="#">
+                <a href="/login">
                     <span className="text-xl">🛒</span>
                     <span className="absolute -top-2 -right-3 bg-orange-500 text-xs px-1 rounded">
                         2
@@ -54,14 +54,13 @@ export default function Header() {
     </div>
     <div className="bg-[#ffff] mx-auto px-4 flex items-center gap-4 py-3 text-[#414c59] font-semibold border-b border-[#d3d3d3] shadow ">
         <div className="border-r border-[#d3d3d3] px-6">
-            <a href="#"><img src="https://m.media-amazon.com/images/G/01/books-voyager/subnav/Subnav_BooksLogo.svg" alt="logo_ebook_amazon" /></a>
+            <Link href="/"><img src="https://m.media-amazon.com/images/G/01/books-voyager/subnav/Subnav_BooksLogo.svg" alt="logo_ebook_amazon" /></Link>
         </div>
         <div className='flex flex-1 justify-center gap-10'>
             {shopMenu.map((cate,index) => (
                 <div key={index}
-                className=" hover:text-[#1880e8]
-                             mx-0.5">
-                    <a href={cate.href}><p>{cate.label}<span  className="font-[15px] text-[#131921] ml-0.5">&#11206;</span></p></a>
+                className=" hover:text-[#1880e8] mx-0.5">
+                    <a href={cate.href}><p>{cate.label}<span  className="font-[15px] text-[#131921] ml-0.5">{cate.icon}</span></p></a>
                 </div>
             ))}
         </div>

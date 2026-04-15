@@ -8,7 +8,7 @@ export default function ProductDetail({product}){
             <div className="grid gap-8 md:grid-cols-[45%_1fr]">
                 <div className="flex min-h-80 items-center justify-center rounded-[5px] border border-gray-100 bg-gray-50 p-6">
                     <Image
-                        src={product}
+                        src={`/product/${product.image}`}
                         alt={product.product_name}
                         width={300}
                         height={300}

@@ -12,7 +12,7 @@ export default function Page() {
   const [page,setPage]=useState(1);
   const [pagination,setPagination]=useState(true);
 
-  const PAGES_SIZE =5;
+  const PAGES_SIZE =8;
   useEffect(()=>{
     async function fetchProd(){
       try{
@@ -20,7 +20,6 @@ export default function Page() {
             'pagination[page]':page,
             'pagination[pageSize]':PAGES_SIZE
           });
-          console.log(api);
           setProds(api.data) ;
           setPagination(api.pagination);
       }catch(err){
@@ -45,8 +44,11 @@ export default function Page() {
     return(<h1 className="text-center">Loading Sản Phẩm...</h1>)
   }
   return (
-    <>
-      <div className="grid grid-cols-2 gap-3 m-12">
+    <div className="w-[90%] mt-6">
+      <h1 className="mt-3 text-4xl font-bold text-gray-900 capitalize">
+        Toàn bộ sản phẩm
+      </h1>
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 m-12">
         <ProductList products={products}/>
       </div>
       {
@@ -58,7 +60,7 @@ export default function Page() {
         />
         )
       }
-    </>
+    </div>
   );
 }
 
