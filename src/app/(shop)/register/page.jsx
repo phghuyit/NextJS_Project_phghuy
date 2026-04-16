@@ -9,12 +9,15 @@ export default function RegisterPage() {
   const [loading,setLoad]=useState(false);
   const [err,setErr]=useState([]);
   const [form,setForm]=useState({
+    username: '',
     name: '',
     email:'',
     password:'',
     gender:'',
     daybirth:'',
     avatar:'',
+    address: '',
+    phone: '',
   })
   const input = "border border-[#a6a6a6] focus:ring-orange-200 focus:ring-2 focus:border-orange-100 outline-none py-1.5 h-9.5 px-3 rounded-[3px] w-full text-base duration-300 mt-1 transition-all"
   function handleForm(e){
@@ -28,6 +31,7 @@ export default function RegisterPage() {
   const handleSubmit= async (e)=>{
     e.preventDefault();
     setLoad(true);
+    setErr([]);
     try{
       const formData = new FormData();
       Object.entries(form).forEach(([key,value])=>{
@@ -35,8 +39,9 @@ export default function RegisterPage() {
           formData.append(key,value);
       })
       await register(formData);
-      alert("Dang ky thanh cong");
-      router.push("/login");
+      if(confirm("Đăng ký tài khoản thành công có muốn chuyển về trang đăng nhập?"))
+      router.push("/login"); 
+     
     }
     catch(error){
       if (error.response?.status === 422) {
@@ -57,10 +62,10 @@ export default function RegisterPage() {
       <div className="border border-[#d5d9d9] bg-white p-8 rounded-lg w-[80%]">
         <h1 className="font-semibold text-3xl mb-5 uppercase">Tạo tài khoản</h1>
         {err.length > 0 && (
-          <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded mb-5">
-            <ul className="list-disc list-inside text-sm space-y-1">
-              {err.map((msg, idx) => (
-                <li key={idx}>{msg}</li>
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg" role="alert">
+            <ul className="list-disc list-inside space-y-1">
+              {err.map((errorMsg, index) => (
+                <li key={index}>{errorMsg}</li>
               ))}
             </ul>
           </div>
@@ -68,26 +73,44 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit}>
             <div className="space-y-4">
                 <div>
+                  <label htmlFor="username" className="font-bold text-base text-[#111]">Tên đăng nhập</label>
+                  <input type="text" id="username" name="username"
+                      className={input} value={form.username} onChange={handleForm}/>
+                </div>
+
+                <div>
                   <label htmlFor="name" className="font-bold text-base text-[#111]">Họ và tên</label>
-                  <input type="text" id="name" name="name" required
+                  <input type="text" id="name" name="name"
                       className={input} value={form.name} onChange={handleForm}/>
                 </div>
 
                 <div>
                   <label htmlFor="email" className="font-bold text-base text-[#111]">Địa chỉ Email</label>
-                  <input type="email" id="email" name="email" required value={form.email}
+                  <input type="email" id="email" name="email" value={form.email}
+                      className={input} onChange={handleForm}/>
+                </div>
+
+                <div>
+                  <label htmlFor="address" className="font-bold text-base text-[#111]">Địa chỉ</label>
+                  <input type="text" id="address" name="address" value={form.address}
+                      className={input} onChange={handleForm}/>
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="font-bold text-base text-[#111]">Số điện thoại</label>
+                  <input type="tel" id="phone" name="phone" value={form.phone}
                       className={input} onChange={handleForm}/>
                 </div>
 
                 <div>
                     <label htmlFor="password" className="font-bold text-base text-[#111]">Mật khẩu</label>
-                    <input type="password" id="pass" name="password" required value={form.password}
+                    <input type="password" id="pass" name="password" value={form.password}
                         className={input} onChange={handleForm}/>
                 </div>
 
                 <div>
                   <label htmlFor="gender" className="font-bold text-base text-[#111]">Giới tính</label>
-                  <select id="gender" name="gender" required
+                  <select id="gender" name="gender"
                       className={input} onChange={handleForm} value={form.gender}>
                       <option value="">Chọn giới tính</option>
                       <option value="0">Nam</option>
@@ -97,7 +120,7 @@ export default function RegisterPage() {
 
                 <div>
                   <label htmlFor="daybirth" className="font-bold text-base text-[#111]">Ngày sinh</label>
-                  <input type="date" id="daybirth" name="daybirth" required value={form.daybirth} onChange={handleForm}
+                  <input type="date" id="daybirth" name="daybirth" value={form.daybirth} onChange={handleForm}
                       className="border border-[#a6a6a6] focus:ring-orange-200 focus:ring-2 focus:border-orange-100 outline-none py-1.5 h-10 px-3 rounded-[3px] w-full text-base duration-300 mt-1 transition-all"/>
                 </div>
 

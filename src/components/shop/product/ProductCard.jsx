@@ -10,23 +10,22 @@ export default function ProductCard({product}){
                     <Image src={`/products/${product.slug}`} alt={product.product_name} className="max-h-full object-contain" fill />
                 </div>
 
-                <div class="my-4 flex-grow">
-            <p className="font-bold text-xl leading-tight">{product.name}</p>
-         
-            {(product.is_on_sale ==1)?(
-                <>
-                    <p className="text-gray-500 line-through text-sm"><span
-                        className="font-bold">{formatPrice(product.price)}</span> vnd</p>
-                    <p className="text-red-600"><span className="font-bold text-xl">{formatPrice(product.sale_price)}</span>
-                    vnd</p>  
-                </>
-            ):(
-                <>
-                    <p className="text-red-600"><span className="font-bold text-xl">{formatPrice(product.price)}</span>
-                    vnd</p>
-                </>
-            )}
-        </div>
+                <div className="my-4 flex-grow">
+                    <p className="font-bold text-xl leading-tight">{product.name}</p>
+                    {(product.is_on_sale ==1)?(
+                        <>
+                            <p className="text-gray-500 line-through text-sm"><span
+                                className="font-bold">{formatPrice(product.price)}</span> vnd</p>
+                            <p className="text-red-600"><span className="font-bold text-xl">{formatPrice(product.sale_price)}</span>
+                            vnd</p>  
+                        </>
+                    ):(
+                        <>
+                            <p className="text-red-600"><span className="font-bold text-xl">{formatPrice(product.price)}</span>
+                            vnd</p>
+                        </>
+                    )}
+                </div>
             </div>
         </Link>
     );

@@ -12,3 +12,7 @@ export async function register(data){
         throw err;
     }
 } 
+
+export async function login(data){
+    return axiosClient.post("/auth/local", data);
+}
