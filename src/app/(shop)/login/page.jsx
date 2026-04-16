@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Page() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center">
@@ -36,9 +38,8 @@ export default function Page() {
                 </div>
             </details>
             <div className="border-[#d5d9d9] border-b my-6"></div>
-            <div className="text-base font-bold text-[#111]">Mua sắm cho doanh nghiệp?</div>
-            <a href="#" className="text-base text-[#0066c0] hover:text-[#c45500] hover:underline">Tạo một tài khoản
-                doanh nghiệp miễn phí</a>
+            <div className="text-base font-bold text-[#111]">Bạn chưa có tài khoản?</div>
+            <Link href="/register" className="text-base text-[#0066c0] hover:text-[#c45500] hover:underline">Tạo tài khoản mới</Link>
         </div>
     </div>
   );
