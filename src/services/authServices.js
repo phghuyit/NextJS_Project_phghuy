@@ -16,3 +16,8 @@ export async function register(data){
 export async function login(data){
     return axiosClient.post("/auth/local", data);
 }
+
+export async function loginAdmin(data) {
+    
+    return axiosClient.post("/admin/login",data);
+}

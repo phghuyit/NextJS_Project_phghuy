@@ -13,6 +13,7 @@ export default function RegisterPage() {
     name: '',
     email:'',
     password:'',
+    password_confirmation:'',
     gender:'',
     daybirth:'',
     avatar:'',
@@ -105,6 +106,10 @@ export default function RegisterPage() {
                 <div>
                     <label htmlFor="password" className="font-bold text-base text-[#111]">Mật khẩu</label>
                     <input type="password" id="pass" name="password" value={form.password}
+                        className={input} onChange={handleForm}/>
+
+                    <label htmlFor="password" className="capitalize font-bold text-base text-[#111]">xác nhận Mật khẩu</label>
+                    <input type="password" id="pass" name="password_confirmation" value={form.password_confirmation} 
                         className={input} onChange={handleForm}/>
                 </div>
 

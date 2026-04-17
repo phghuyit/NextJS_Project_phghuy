@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDollarSign,faClipboard,faCubes,faUsers } from "@fortawesome/free-solid-svg-icons";
 export default function AdminPage() {
   return (
-    <div id="page-dashboard" class="page active">
+    <div id="page-dashboard" className="page active">
         <h2 className="text-base font-semibold text-gray-700 mb-5 uppercase m-6">Tổng quan</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 m-6">
         

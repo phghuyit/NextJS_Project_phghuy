@@ -3,7 +3,8 @@ import AdminTable from "@/components/admin/table/AdminTable";
 import Pagination from "@/components/common/Pagination";
 import { getProductsByPageSize } from "@/services/productServices";
 import { useEffect,useState } from "react";
-
+import { useRouter } from 'next/navigation';
+import Link from "next/link";
 export default function Page() {
   const col=[
     {key:"id",label:"ID"},
@@ -14,7 +15,7 @@ export default function Page() {
   const [products,setProds]= useState([]);
   const [error,setError] = useState(null);
   const [loading,setLoading] = useState(true);
-
+  const router = useRouter();
   const [page,setPage]=useState(1);
   const [pagination,setPagination]=useState(true);
   const PAGES_SIZE =5;
@@ -51,7 +52,12 @@ export default function Page() {
   }
   return (
       <>
-        <h1 className="m-6 text-4xl uppercase font-bold">Trang quản lý sản phẩm</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="m-6 text-4xl uppercase font-bold">Trang quản lý sản phẩm</h1>
+          <Link href="/admin/products/create" className="capitalize bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md transition-colors">
+            Tạo sản phẩm mới
+          </Link>
+        </div>
         <div className="flex justify-center flex-col m-3">
           <AdminTable columns={col} data={products}/>
           {
