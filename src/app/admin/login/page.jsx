@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginAdmin as loginAdminService } from '@/services/authServices';
 import { useAuth } from '@/context/AdminContext';
-import Cookies from 'js-cookie'
 export default function Page() {
     const router = useRouter();
     const [mounted,setMounted]=useState(false);
@@ -52,7 +51,7 @@ export default function Page() {
     const input = "border border-[#a6a6a6] focus:ring-blue-200 focus:ring-2 focus:border-blue-400 outline-none h-10 px-3 rounded-[3px] w-full text-base duration-300 mt-2 transition-all";
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
+    <div className="h-full bg-gray-50 flex flex-col items-center justify-center">
       <div className="border border-[#d5d9d9] bg-white p-8 rounded-lg w-[400px] shadow-sm">
             <div className="text-center mb-6">
                 <h1 className="font-semibold text-3xl uppercase text-gray-800">Admin Login</h1>
@@ -73,7 +72,7 @@ export default function Page() {
                     <label className="font-bold text-base text-[#111] block mt-3">Mật Khẩu</label>
                     <input type="password" id="password" name="password" className={input} onChange={handleForm} value={form.password} required />
                 </div>
-                <button type="submit" disabled={loading} className={`bg-blue-600 hover:bg-blue-700 text-white rounded-md w-full py-2.5 text-base shadow font-medium mt-6 transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>{loading ? 'Đang xử lý...' : 'Đăng nhập'}</button>
+                <button type="submit" disabled={loading} className={`cursor-pointer bg-blue-600 hover:bg-blue-700 text-white rounded-md w-full py-2.5 text-base shadow font-medium mt-6 transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}>{loading ? 'Đang xử lý...' : 'Đăng nhập'}</button>
             </form>
         </div>
     </div>

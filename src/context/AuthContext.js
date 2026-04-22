@@ -8,7 +8,10 @@ export function AuthProvider({children}){
     const [user,setUser] = useState(null);
     useEffect(()=>{
         const stored = localStorage.getItem("user");
-        if(stored) setUser(JSON.parse(stored));
+        if(stored) 
+        {
+            setUser(JSON.parse(stored));
+        }
     },[])
     const loginUser = (userData, token)=>{
         localStorage.setItem("user",JSON.stringify(userData));

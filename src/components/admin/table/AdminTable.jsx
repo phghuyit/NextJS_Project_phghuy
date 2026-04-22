@@ -1,10 +1,11 @@
 "use client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare,faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faPenToSquare,faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import formatPrice from './../../../utils/formatPrice';
-export default function AdminTable({ columns, data,onEdit,onDel }) {
+let btnClass="rounded-[5px] border border-gray-200 px-3 py-2  transition duration-300 hover:border-red-300 hover:bg-red-50 cursor-pointer"
+export default function AdminTable({ columns, data,onEdit,onDel,onDetail}) {
   return (
-    <table border="1" className="w-full border-collapse bg-white text-left  shadow-sm">
+    <table border="1" className="border-collapse bg-white text-left  shadow-sm mx-3">
       <thead>
         <tr className="bg-[#131921] text-white">
           {columns.map(col => (
@@ -21,11 +22,15 @@ export default function AdminTable({ columns, data,onEdit,onDel }) {
             ))}
             <td className="border border-gray-200 px-4 py-3">
                 <div className="flex items-center justify-center gap-3">
-                    <button className="rounded-[5px] border border-gray-200 px-3 py-2 text-[#131921] transition duration-300 hover:border-orange-400 hover:bg-orange-50 hover:text-orange-500" 
+                    <button className={`text-blue-500 ${btnClass}`} 
+                    onClick={()=>onDetail(row)}>
+                        <FontAwesomeIcon icon={faEye} className="w-6 h-6" />
+                    </button>
+                    <button className={`text-[#131921] ${btnClass}`} 
                     onClick={()=>onEdit(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className="w-6 h-6" />
                     </button>
-                    <button className="rounded-[5px] border border-gray-200 px-3 py-2 text-red-500 transition duration-300 hover:border-red-300 hover:bg-red-50" 
+                    <button className={`text-red-500 ${btnClass}`} 
                     onClick={()=>onDel(row.id)}>
                         <FontAwesomeIcon icon={faTrashCan} className="w-6 h-6" />
                     </button>

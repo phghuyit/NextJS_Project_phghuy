@@ -1,13 +1,24 @@
 "use client"
 import { useContext,createContext,useState,useEffect } from "react";
 import Cookies from "js-cookie";
+
 const AdminContext = createContext();
 
+export function useAuth(){
+    return useContext(AdminContext);
+}
+
 export function AdminAuthProvider({children}){
-    const [admin,setAdmin]=useState({});
+    const [admin,setAdmin]=useState(null);
     useEffect(()=>{
-        const stored = Cookies?.get();
-        if(stored) { setAdmin(stored);}
+        const stored = Cookies.get('user');
+        if(stored) { 
+            try {
+                setAdmin(JSON.parse(stored));
+            } catch (error) {
+                setAdmin(stored);
+            }
+        }
     },[])
 
     function loginAdmin(user,token){
@@ -22,7 +33,7 @@ export function AdminAuthProvider({children}){
     }
     function logoutAdmin(){
         Cookies.remove('user');
-        Cookies.remove('token')
+        Cookies.remove('adminToken', { path: '/admin' });
         setAdmin(null);
     }
     return (
@@ -32,6 +43,3 @@ export function AdminAuthProvider({children}){
     );
 }
 
-export function useAuth(){
-    return useContext(AdminContext);
-}

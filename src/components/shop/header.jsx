@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { shopMenu } from '@/data/menu';
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from '@/context/AuthContext';
 
 export default function Header() {
-    const {user}=useAuth();
+    const {user,logoutUser}=useAuth();
   return (
     <header className="text-white">
     <div className="bg-[#131921] mx-auto px-4 flex items-center gap-4 py-3">
@@ -33,10 +33,6 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-6 text-sm">
 
             <div className="hover:underline cursor-pointer">
-                {/* <Link href="/login">
-                    <p className="text-xs">Hello, Sign in</p>
-                    <p className="font-semibold">Account & Lists</p>
-                </Link> */}
                 {
                     user?(
                         <div className="flex">
@@ -45,7 +41,7 @@ export default function Header() {
                                     {user.name}
                                 </span>
                             </Link>
-                            <button>Đăng Xuất</button>
+                            <button onClick={logoutUser}>Đăng Xuất</button>
                         </div>
                     ):(
                         <Link href="/login">

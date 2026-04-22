@@ -28,7 +28,7 @@ export function getDetailProducts(slug){
 
 export async function getProductsByPageSize(params={}){
     const res= await axiosClient.get("/productsByPageSize",{params});
-    return res.data;
+    return res;
 }
 
 export async function getNewProducts(param=4){

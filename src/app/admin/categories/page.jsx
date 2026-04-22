@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import categoryServices from "@/services/categoryService"
 import AdminTable from "@/components/admin/table/AdminTable";
 import Pagination from "@/components/common/Pagination";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Page() {
   const [cate,setCate] = useState([]);
@@ -12,6 +14,8 @@ export default function Page() {
   const [page,setPage]=useState(1);
   const [pagination,setPagination]=useState(true);
   const PAGES_SIZE =5;
+
+  const router= useRouter();
 
   const col=[
     {key:"id",label:"ID"},
@@ -28,8 +32,8 @@ export default function Page() {
                     'pagination[page]':page,
                     'pagination[pageSize]':PAGES_SIZE
                   });
-        setCate(api.data);
-        setPagination(api.pagination);
+        setCate(api?.data || api || []);
+        setPagination(api?.pagination || api?.meta || null);
       }catch(err){
         console.log("Phat hien loi"+err);
         setError("Loi khong tim thay cate");
@@ -45,17 +49,61 @@ export default function Page() {
     window.scrollTo({top:0, behavior: 'smooth'})
   }
 
+  function handleDetail(row){
+    router.push(`/admin/categories/${row.id}`)
+  }
+
+  function handleEdit(row){
+    router.push(`/admin/categories/${row.id}/edit`);
+  }
+
+  async function handleDel(rowid){
+    if(!window.confirm(`Bạn có chắc chắn muốn xóa danh mục?`)) return;
+    
+    try {
+      await categoryServices.deleteCategory(rowid);
+      alert("Xóa danh mục thành công!");
+      setCate(prevCate => prevCate.filter(item => item.id !== rowid)); 
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi 404: Không tìm thấy đường dẫn xóa trên Backend API!");
+    }
+  }
+
   if(error){
-    return(<h1>{error}</h1>);
+    return(
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <h1 className="text-2xl font-bold text-red-600 text-center">{error}</h1>
+      </div>
+    );
   }
   if(loading){
-    return(<h1 className="text-center">Loading Danh Sách Danh Mục...</h1>)
+    return(
+    <div className="flex justify-center items-center h-full">
+      <h1 className="text-center text-2xl font-bold">Loading Danh Sách Danh Mục...</h1>
+    </div>
+    )
   }
   return (
         <>
-          <h1 className="m-6 text-4xl uppercase font-bold">Trang quản lý danh muc</h1>
+          <nav className="flex items-center space-x-2 text-sm font-medium text-gray-500 mx-6 mt-6 mb-2">
+            <Link href="/admin" className="hover:text-blue-600 transition-colors">Trang Chủ</Link>
+            <span>/</span>
+            <span className="text-gray-800">Quản Lý Danh Mục</span>
+          </nav>
+
+          <div className="flex justify-between items-center m-6">
+            <h1 className="text-4xl uppercase font-bold">Trang quản lý danh muc</h1>
+            <button 
+              onClick={() => router.push('/admin/categories/trash')}
+              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors shadow-sm"
+            >
+              Thùng Rác 
+            </button>
+            
+          </div>
           <div className="flex justify-center flex-col">
-            <AdminTable columns={col} data={cate}/>
+            <AdminTable columns={col} data={cate} onDetail={handleDetail} onEdit={handleEdit} onDel={handleDel}/>
             {
               !loading&&pagination&&pagination.pageCount>1 && (
                 <Pagination 
