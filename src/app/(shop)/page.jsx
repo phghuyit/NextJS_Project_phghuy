@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 
 export default function Page() {
 
-  const [newProd,setNewProd]=useState({})
-  const [hotProd,setHotProd]=useState({})
-  const [saleProd,setSaleProd]=useState({})
+  const [newProd,setNewProd]=useState([])
+  const [hotProd,setHotProd]=useState([])
+  const [saleProd,setSaleProd]=useState([])
   const [error,setError] = useState(null);
   const [loading,setLoading] = useState(true);
   useEffect(()=>{
@@ -17,9 +17,9 @@ export default function Page() {
         const hotProdRes = await getHotProducts();
         const saleProdRes = await getSaleProducts();
         
-        setNewProd(newProdRes);
-        setHotProd(hotProdRes);
-        setSaleProd(saleProdRes);
+        setNewProd(Array.isArray(newProdRes) ? newProdRes : []);
+        setHotProd(Array.isArray(hotProdRes) ? hotProdRes : []);
+        setSaleProd(Array.isArray(saleProdRes) ? saleProdRes : []);
       }catch(err){
         console.log("Phat hien loi"+err);
         setError("Loi khong fetch data cho home page duoc!");
@@ -53,7 +53,6 @@ export default function Page() {
             </div>
           </div>
         </section>
-
         <section className="mx-auto max-w-7xl px-6 py-10">
           <ProductSection
             title="Sản Phẩm Bán Chạy Nhất"

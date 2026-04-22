@@ -36,15 +36,15 @@ export async function getTrashedProducts(params={}){
 }
 export async function getNewProducts(param=4){
     const res= await axiosClient.get(`/newProducts/${param}`);
-    return res.data;
+    return res;
 }
 export async function getSaleProducts(param=4){
     const res= await axiosClient.get(`/saleProducts/${param}`);
-    return res.data;
+    return res;
 }
 export async function getHotProducts(param=4){
     const res= await axiosClient.get(`/hotProducts/${param}`);
-    return res.data;
+    return res;
 }
 
 export function getProductById(id){
