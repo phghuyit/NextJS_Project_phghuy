@@ -28,8 +28,8 @@ export default function Page() {
         setErr([]);
         try {
             const res = await loginAdminService(form);
-            const token = res?.data.access_token;
-            loginAdmin(res.data.data,token);
+            const token = res?.access_token;
+            loginAdmin(res.data,token);
             router.replace("/admin"); 
             // router.push("/admin"); 
         } catch (error) {

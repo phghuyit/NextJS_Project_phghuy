@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import productServices from "@/services/productServices";
+import {getTrashedProducts} from "@/services/productServices";
 import AdminTable from "@/components/admin/table/AdminTable";
 import Pagination from "@/components/common/Pagination";
 import { useRouter } from "next/navigation";
@@ -13,8 +13,8 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(true);
-  const router = useRouter();
   const PAGES_SIZE = 5;
+  const router = useRouter();
 
   const col = [
     { key: "id", label: "ID" },
@@ -28,15 +28,15 @@ export default function Page() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const api = await productServices.getByPageSize({
+        const api = await getTrashedProducts({
           "pagination[page]": page,
           "pagination[pageSize]": PAGES_SIZE,
         });
         setProducts(api?.data || api || []);
         setPagination(api?.pagination || api?.meta || null);
       } catch (err) {
-        console.error(err);
-        setError("Lỗi không tìm thấy sản phẩm");
+        console.log("Phát hiện lỗi" + err);
+        setError("Lỗi không tải được thùng rác sản phẩm");
       } finally {
         setLoading(false);
       }
@@ -53,57 +53,64 @@ export default function Page() {
     router.push(`/admin/products/${row.id}`);
   }
 
-  function handleEdit(row) {
-    router.push(`/admin/products/${row.id}/edit`);
+  async function handleEdit(row) {
+    // Repurposing Edit button for Restore
+    if (!window.confirm("Bạn có chắc chắn muốn khôi phục sản phẩm này?")) return;
+    try {
+      await productServices.restoreProduct(row.id);
+      alert("Khôi phục thành công!");
+      setProducts((prev) => prev.filter((item) => item.id !== row.id));
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi khôi phục sản phẩm!");
+    }
   }
 
   async function handleDel(rowid) {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa sản phẩm?")) return;
+    // Repurposing Delete button for Force Delete
+    if (!window.confirm("CẢNH BÁO: Bạn có chắc chắn muốn xóa VĨNH VIỄN sản phẩm này?")) return;
 
     try {
-      await productServices.delete(rowid);
-      alert("Xóa sản phẩm thành công!");
+      await productServices.forceDeleteProduct(rowid);
+      alert("Xóa vĩnh viễn thành công!");
       setProducts((prev) => prev.filter((item) => item.id !== rowid));
     } catch (error) {
       console.error(error);
-      alert("Lỗi xóa sản phẩm trên Backend API!");
+      alert("Lỗi xóa vĩnh viễn trên Backend API!");
     }
   }
 
   if (error) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <h1 className="text-center text-2xl font-bold text-red-600">{error}</h1>
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <h1 className="text-2xl font-bold text-red-600 text-center">{error}</h1>
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <h1 className="text-center text-2xl font-bold">Loading Danh Sách Sản Phẩm...</h1>
+      <div className="flex justify-center items-center h-full">
+        <h1 className="text-center text-2xl font-bold">Loading Thùng Rác Sản Phẩm...</h1>
       </div>
     );
   }
 
   return (
     <>
-      <nav className="mx-6 mt-6 mb-2 flex items-center space-x-2 text-sm font-medium text-gray-500 ">
-        <Link href="/admin" className="transition-colors hover:text-blue-600">Trang chủ</Link>
+      <nav className="flex items-center space-x-2 text-sm font-medium text-gray-500 mx-6 mt-6 mb-2">
+        <Link href="/admin" className="hover:text-blue-600 transition-colors">Trang chủ</Link>
         <span>/</span>
-        <span className="text-gray-800">Quản lý sản phẩm</span>
+        <Link href="/admin/products" className="hover:text-blue-600 transition-colors">Quản lý sản phẩm</Link>
+        <span>/</span>
+        <span className="text-red-600 select-none">Thùng rác</span>
       </nav>
 
       <div className="flex justify-between items-center m-6">
-        <h1 className="text-4xl uppercase font-bold select-none">Trang quản lý sản phẩm</h1>
-        <div className="flex gap-4">
-          <button onClick={() => router.push("/admin/products/create")} className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors shadow-sm">
-            Thêm sản phẩm
-          </button>
-          <button onClick={() => router.push("/admin/products/trash")} className="cursor-pointer bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors shadow-sm">
-            Thùng rác
-          </button>
-        </div>
+        <h1 className="text-4xl uppercase font-bold">Thùng rác sản phẩm</h1>
+        <Link href="/admin/products" className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors shadow-sm">
+          Quay Lại
+        </Link>
       </div>
 
       <div className="flex justify-center flex-col">

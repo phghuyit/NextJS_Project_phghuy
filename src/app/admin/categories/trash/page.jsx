@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import categoryServices from "@/services/categoryService";
 import Pagination from "@/components/common/Pagination";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRotate, faXmark,  } from "@fortawesome/free-solid-svg-icons";
 
 export default function TrashPage() {
   const [cate, setCate] = useState([]);
@@ -98,8 +100,8 @@ export default function TrashPage() {
           {cate.length === 0 ? (
             <div className="text-center py-10 text-gray-500 font-medium">Thùng rác trống.</div>
           ) : (
-            <table className="min-w-full">
-              <thead className="bg-gray-100 border-b">
+            <table className="w-full">
+              <thead className="bg-gray-100 border-b ">
                 <tr>
                   <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">ID</th>
                   <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Tên Danh Mục</th>
@@ -109,25 +111,27 @@ export default function TrashPage() {
               </thead>
               <tbody>
                 {cate.map((row) => (
-                  <tr key={row.id} className="border-b hover:bg-gray-50 transition-colors">
+                  <tr key={row.id} className="border-b text-gray-700 transition duration-200 hover:bg-orange-50">
                     <td className="py-3 px-4 text-gray-800">{row.id}</td>
                     <td className="py-3 px-4 text-gray-800">{row.category_name}</td>
                     <td className="py-3 px-4 text-gray-800 text-sm">
                       {row.deleted_at ? new Date(row.deleted_at).toLocaleString() : 'N/A'}
                     </td>
-                    <td className="py-3 px-4 flex justify-center space-x-3">
-                      <button 
-                        onClick={() => handleRestore(row.id)}
-                        className="text-white bg-green-500 hover:bg-green-600 px-3 py-1 rounded shadow-sm transition-colors text-sm font-medium"
-                      >
-                        Khôi Phục
-                      </button>
-                      <button 
-                        onClick={() => handleForceDelete(row.id)}
-                        className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded shadow-sm transition-colors text-sm font-medium"
-                      >
-                        Xóa Vĩnh Viễn
-                      </button>
+                    <td className="py-3 px-4">
+                      <div className="flex justify-center gap-3">
+                        <button 
+                          onClick={() => handleRestore(row.id)}
+                          className="rounded-lg border border-gray-200 px-3 py-2 transition-colors duration-300 hover:border-red-300 hover:bg-red-50 cursor-pointer"
+                        >
+                          <FontAwesomeIcon icon={faRotate} className="w-6 h-6 text-teal-400" />
+                        </button>
+                        <button 
+                          onClick={() => handleForceDelete(row.id)}
+                          className="rounded-lg border border-gray-200 px-3 py-2 transition-colors duration-300 hover:border-red-300 hover:bg-red-50 cursor-pointer"
+                        >
+                          <FontAwesomeIcon icon={faXmark} className="w-6 h-6 text-red-500" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -2,42 +2,93 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import categoryServices from '@/services/categoryService.js';
-import 
-const categories = [
-    { id: 1, name: 'Danh mục A' },
-    { id: 2, name: 'Danh mục B' },
-    { id: 3, name: 'Danh mục C' },
-];
-const brands = [
-    { id: 1, name: 'Thương hiệu X' },
-    { id: 2, name: 'Thương hiệu Y' },
-    { id: 3, name: 'Thương hiệu Z' },
-];
+import {createProduct} from '@/services/productServices';
 
 export default function CreateProductPage() {
+    const router = useRouter();
     const inputClass = "border border-gray-300 focus:ring-blue-200 focus:ring-2 focus:border-blue-400 outline-none h-10 px-3 rounded-md w-full text-base duration-300 transition-all";
     const labelClass = "font-bold text-sm text-gray-700 block mb-1";
-
+    const [loading,setLoad]=useState(false);
+    const [err,setErr]=useState([]);
     const [cats,setCat]=useState([]);
     const [brands,setBrand]=useState([]);
+    const [form,setFrom]=useState({
+        product_name: '',
+        slug: '',
+        cat_id: '',
+        description: '',
+        image: '' ,
+        price: '',
+        // brand_id: '',
+        qty: '',
+        status: '',
+    })
+    function handleForm(e){
+        const {name,value,files}=e.target;
+        const val = files && files.length > 0 ? files[0] : value;
 
+        if (name === "product_name") {
+            const slug = val
+                .toString()
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") // Remove Vietnamese diacritics
+                .replace(/[đĐ]/g, "d") // Replace đ with d
+                .replace(/\s+/g, "-") // Replace spaces with hyphens
+                .replace(/[^\w\-]+/g, "") // Remove all non-word characters
+                .replace(/\-\-+/g, "-") // Replace multiple hyphens with single hyphen
+                .replace(/^-+/, "") // Trim hyphens from start
+                .replace(/-+$/, ""); // Trim hyphens from end
+
+            setFrom({
+                ...form,
+                product_name: val,
+                slug: slug,
+            });
+        } else {
+            setFrom({
+                ...form,
+                [name]: val,
+            });
+        }
+    }
+
+    const handleSubmit= async (e)=>{
+        e.preventDefault();
+        setLoad(true);
+        try{
+            const formData = new FormData();
+            Object.entries(form).forEach(([key,value])=>{
+                if(value!=null&&value!="")
+                formData.append(key,value);
+            })
+            await createProduct(formData);
+            if(confirm("Tạo sản phẩm thành công có muốn chuyển về trang đăng nhập?"))
+            router.push("/admin/products"); 
+        }catch(err){
+            console.error(err);
+            setErr("Lỗi trong quá trình submit form");
+        }
+    }
     async function fetchCats(){
         const res=await categoryServices.getAll();
         if(res){
-            setCat(res.data.categories);
+            setCat(res.categories);
         }
     };
-    async function fetchBrands(){
-        const res=await categoryServices.getAll();
-        if(res){
-            setCat(res.data.categories);
-        }
-    };
+    // async function fetchBrands(){
+    //     const res=await brandServices.getAll();
+        
+    //     if(res){
+    //         setBrand(res.brands);
+    //     }
+    // };
     useEffect(()=>{
         fetchCats();
-    },[])
-    console.log(cats);
+        // fetchBrands();
+    },[]);
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             <div className="flex justify-between items-center mb-6">
@@ -47,7 +98,7 @@ export default function CreateProductPage() {
                 </Link>
             </div>
 
-            <form className="bg-white p-6 rounded-lg shadow-md">
+            <form className="bg-white p-6 rounded-lg shadow-md" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label htmlFor="product_name" className={labelClass}>Tên sản phẩm</label>
@@ -57,17 +108,7 @@ export default function CreateProductPage() {
                             name="product_name"
                             className={inputClass}
                             required
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="slug" className={labelClass}>Đường dẫn (Slug)</label>
-                        <input
-                            type="text"
-                            id="slug"
-                            name="slug"
-                            className={inputClass}
-                            required
+                            onChange={handleForm}
                         />
                     </div>
 
@@ -79,6 +120,7 @@ export default function CreateProductPage() {
                             className={` ${inputClass}`}
                             required
                             defaultValue=""
+                            onChange={handleForm}
                         >
                             <option value="" disabled>Chọn danh mục</option>
                             {
@@ -102,7 +144,7 @@ export default function CreateProductPage() {
                                 <option key={brand.id} value={brand.id}>{brand.name}</option>
                             ))}
                         </select>
-                    </div> */}
+                    </div>  */}
 
                     <div className="md:col-span-2">
                         <label htmlFor="description" className={labelClass}>Mô tả</label>
@@ -111,6 +153,7 @@ export default function CreateProductPage() {
                             name="description"
                             rows="4"
                             className={`${inputClass} h-auto resize-y`}
+                            onChange={handleForm}
                         ></textarea>
                     </div>
 
@@ -124,6 +167,7 @@ export default function CreateProductPage() {
                             min="0"
                             step="0.01"
                             required
+                            onChange={handleForm}
                         />
                     </div>
 
@@ -135,6 +179,7 @@ export default function CreateProductPage() {
                             name="qty"
                             className={inputClass}
                             min="0"
+                            onChange={handleForm}
                         />
                     </div>
 
@@ -146,6 +191,7 @@ export default function CreateProductPage() {
                             name="image"
                             accept="image/jpeg,image/png,image/jpg,image/gif,image/svg"
                             className={`${inputClass} pt-2`}
+                            onChange={handleForm}
                         />
                     </div>
 
@@ -156,6 +202,7 @@ export default function CreateProductPage() {
                             name="status"
                             className={inputClass}
                             defaultValue="1"
+                            onChange={handleForm}
                         >
                             <option value="1">Đang hoạt động (Active)</option>
                             <option value="0">Không hoạt động (Inactive)</option>

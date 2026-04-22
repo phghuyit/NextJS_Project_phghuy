@@ -1,5 +1,6 @@
 import axios from "axios";
 import API_CONFIG from "../config/api.js";
+import Cookies from "js-cookie";
 
 
 // const token="13|DiEGIBA7rJzH8pH3MV8ehJNXDWIb5DXouVjtdLJe37e439e7";
@@ -15,7 +16,9 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   (config) => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("accessToken");
+      const token =
+        localStorage.getItem("accessToken") ||
+        Cookies.get("adminToken");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -35,6 +38,7 @@ axiosClient.interceptors.response.use(
       "Đã xảy ra lỗi, vui lòng thử lại.";
     if (status === 401 && typeof window !== "undefined") {
       localStorage.removeItem("accessToken");
+      Cookies.remove("adminToken", { path: "/admin" });
       window.location.href = "/login";
     }
     if (status === 403) {

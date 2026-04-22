@@ -25,8 +25,8 @@ const categoryServices = {
     },
     
     async getTrashedCategories(params={}){
-        const res = await axiosClient.get("/categories/trash", {params});
-        return res.data || res;
+        const res = await axiosClient.get("/trashedCategoriesByPageSize", {params});
+        return res?.data || res;
     },
     restoreCategory(id){
         return axiosClient.patch(`/categories/${id}/restore`);

@@ -30,7 +30,10 @@ export async function getProductsByPageSize(params={}){
     const res= await axiosClient.get("/productsByPageSize",{params});
     return res;
 }
-
+export async function getTrashedProducts(params={}){
+    const res= await axiosClient.get("/trashedProductsByPageSize",{params});
+    return res;
+}
 export async function getNewProducts(param=4){
     const res= await axiosClient.get(`/newProducts/${param}`);
     return res.data;
@@ -43,3 +46,34 @@ export async function getHotProducts(param=4){
     const res= await axiosClient.get(`/hotProducts/${param}`);
     return res.data;
 }
+
+export function getProductById(id){
+    return axiosClient.get(`/products/${id}`);
+}
+
+export function createProduct(data){
+    return axiosClient.post("/products", data);
+}
+
+export async function updateProduct(id, data){
+    if (data instanceof FormData) {
+        data.append("_method", "PUT");
+        return axiosClient.post(`/products/${id}`, data);
+    }
+    return axiosClient.put(`/products/${id}`, data);
+}
+
+export function deleteProduct(id){
+    return axiosClient.delete(`/products/${id}`);
+}
+
+const productServices = {
+    getAll: getProducts,
+    getByPageSize: getProductsByPageSize,
+    getById: getProductById,
+    create: createProduct,
+    update: updateProduct,
+    delete: deleteProduct,
+};
+
+export default productServices;
