@@ -18,6 +18,7 @@ export default function Page() {
   const [imageFile, setImageFile] = useState(null);
   const [load,setLoad]=useState(true);
   const [err,setErr]=useState(null);
+  const [cats, setCats] = useState([]);
   
   useEffect(()=>{
     async function fetchCat() {
@@ -38,7 +39,22 @@ export default function Page() {
         setLoad(false);
       }
     }
-    if (id) fetchCat();
+
+    async function fetchCats() {
+      try {
+        const res = await categoryServices.getAll();
+        if (res) {
+          setCats(res.categories || res.data || (Array.isArray(res) ? res : []));
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      }
+    }
+
+    if (id) {
+      fetchCat();
+      fetchCats();
+    }
   }, [id]);
 
   const handleChange = (e) => {
@@ -124,15 +140,18 @@ export default function Page() {
 
             {/* Danh mục cha */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Danh Mục Cha (Parent ID)</label>
-              <input 
-                type="number" 
+              <label className="block text-sm font-medium text-gray-700 mb-1">Danh Mục Cha</label>
+              <select 
                 name="parent_id"
                 value={cat.parent_id}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                placeholder="0" 
-              />
+              >
+                <option value="0">Không có (Danh mục gốc)</option>
+                {cats.filter((c) => c.id != id).map((c) => (
+                  <option key={c.id} value={c.id}>{c.category_name}</option>
+                ))}
+              </select>
             </div>
 
             {/* Sắp xếp */}

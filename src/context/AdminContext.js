@@ -20,7 +20,7 @@ export function AdminAuthProvider({children}){
             }
         }
     },[])
-
+    
     function loginAdmin(user,token){
         Cookies.set('user',user);
         Cookies.set('adminToken',token,{

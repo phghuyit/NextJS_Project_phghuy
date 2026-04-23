@@ -18,11 +18,15 @@ export default function Page() {
 
   const col = [
     { key: "id", label: "ID" },
+    { key: "image", label: "Hình ảnh" },
     { key: "product_name", label: "Tên sản phẩm" },
-    { key: "cat_id", label: "Mã danh mục" },
-    { key: "brand_id", label: "Mã thương hiệu" },
-    { key: "price", label: "Giá" },
+    { key: "cat_id", label: "Tên danh mục" },
+    { key: "brand_id", label: "Tên thương hiệu" },
     { key: "qty", label: "Số lượng" },
+    { key: "is_on_sale", label: "Trạng thái khuyến mãi" },
+    { key: "sale_price", label: "Giá Khuyến Mãi" },
+    { key: "price", label: "Giá" },
+    { key: "status", label: "Trạng Thái" },
   ];
 
   useEffect(() => {
