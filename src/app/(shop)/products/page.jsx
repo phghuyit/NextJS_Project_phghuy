@@ -34,7 +34,7 @@ export default function Page() {
 
   function handlePageChange(newPage){
     setPage(newPage);
-    window.scrollTo({top:0, behavior: 'smooth'})
+    window.scrollTo({top:0, behavior: 'smooth'});
   }
   
   if(error){

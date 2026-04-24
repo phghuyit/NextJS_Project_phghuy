@@ -28,10 +28,9 @@ export default function Page() {
         setErr([]);
         try{
             const res=await login(form);
+            console.log(res)
             alert("Đăng nhập thành công!",res);
-            // localStorage.setItem('accessToken',res.data.access_token);
-            // localStorage.setItem('user',JSON.stringify(res.data.data));
-            loginUser(res.data.data, res.data.access_token);
+            loginUser(res.data, res.access_token);
             router.push("/");
         }catch(error){
             if (error.response?.status === 422 || error.response?.status === 401) {

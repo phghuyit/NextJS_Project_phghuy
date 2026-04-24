@@ -1,18 +1,27 @@
+import { addToCart } from "@/lib/features/cart/cartSlice";
 import formatPrice from "@/utils/formatPrice";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
 
 const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
 export default function ProductDetail({product}){
+    const dispatch = useDispatch();
+
+    const handleAdd = ()=>{
+        dispatch(addToCart(product));
+    }
+
     return(
         <section className="m-12 rounded-[5px] border border-gray-200 bg-white p-6 shadow">
             <div className="grid gap-8 md:grid-cols-[45%_1fr]">
                 <div className="flex min-h-80 items-center justify-center rounded-[5px] border border-gray-100 bg-gray-50 p-6">
                     <Image
-                        src={`/product/${product.image}`}
+                        src="https://placehold.co/300"
                         alt={product.product_name}
                         width={300}
                         height={300}
                         className="max-h-96 max-w-full object-contain"
+                        unoptimized
                     />
                 </div>
 
@@ -34,7 +43,7 @@ export default function ProductDetail({product}){
                     </p>
 
                     <div className="mt-8 flex flex-wrap gap-3">
-                        <button className="rounded-[5px] bg-orange-400 px-6 py-3 font-semibold text-[#131921] transition duration-300 hover:bg-orange-500">
+                        <button onClick={handleAdd} className="rounded-[5px] bg-orange-400 px-6 py-3 font-semibold text-[#131921] transition duration-300 hover:bg-orange-500">
                             Add to cart
                         </button>
 

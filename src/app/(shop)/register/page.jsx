@@ -45,13 +45,12 @@ export default function RegisterPage() {
      
     }
     catch(error){
-      if (error.response?.status === 422) {
-        const validationErrors = error.response.data.errors;
-        if (validationErrors) {
-          setErr(Object.values(validationErrors).flat());
-        } else {
-          setErr([error.response.data.message || "Dữ liệu đăng ký không hợp lệ."]);
-        }
+      const errData = error.response?.data || error;
+
+      if (errData?.errors) {
+        setErr(Object.values(errData.errors).flat());
+      } else if (errData?.message) {
+        setErr([errData.message || "Dữ liệu đăng ký không hợp lệ."]);
       } else {
         setErr(["Đã xảy ra lỗi hệ thống, vui lòng thử lại."]);
       }

@@ -4,14 +4,14 @@ import Cookies from "js-cookie";
 
 const AdminContext = createContext();
 
-export function useAuth(){
+export function useAdminAuth(){
     return useContext(AdminContext);
 }
 
 export function AdminAuthProvider({children}){
     const [admin,setAdmin]=useState(null);
     useEffect(()=>{
-        const stored = Cookies.get('user');
+        const stored = Cookies.get('adminUser');
         if(stored) { 
             try {
                 setAdmin(JSON.parse(stored));
@@ -22,7 +22,7 @@ export function AdminAuthProvider({children}){
     },[])
     
     function loginAdmin(user,token){
-        Cookies.set('user',user);
+        Cookies.set('adminUser', user);
         Cookies.set('adminToken',token,{
             expires:7,
             secure:true,
@@ -32,7 +32,7 @@ export function AdminAuthProvider({children}){
         setAdmin(user);
     }
     function logoutAdmin(){
-        Cookies.remove('user');
+        Cookies.remove('adminUser');
         Cookies.remove('adminToken', { path: '/admin' });
         setAdmin(null);
     }
@@ -42,4 +42,3 @@ export function AdminAuthProvider({children}){
         </AdminContext.Provider>
     );
 }
-

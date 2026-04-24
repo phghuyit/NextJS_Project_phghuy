@@ -2,13 +2,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginAdmin as loginAdminService } from '@/services/authServices';
-import { useAuth } from '@/context/AdminContext';
+import { useAdminAuth } from '@/context/AdminContext';
 export default function Page() {
     const router = useRouter();
     const [mounted,setMounted]=useState(false);
     const [loading, setLoad] = useState(false);
     const [err, setErr] = useState([]);
-    const { loginAdmin } = useAuth();
+    const { loginAdmin } = useAdminAuth();
     const [form, setForm] = useState({
         email: '',
         password: ''

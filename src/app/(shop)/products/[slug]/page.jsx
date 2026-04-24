@@ -13,8 +13,8 @@ export default function Page() {
         async function fetchDetailProd(){
             try{
                 let api = await getDetailProducts(slug);
-                console.log(api.data.data)
-                setProd(api.data.data);
+                // console.log(api.data)
+                setProd(api.data);
             }catch(error){
                 console.log("Loi khong load duoc");
                 setError("Loi fetch api");

@@ -1,11 +1,11 @@
 "use client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell,faUser } from "@fortawesome/free-solid-svg-icons";
-import { useAuth } from "@/context/AdminContext";
+import { useAdminAuth } from "@/context/AdminContext";
 import Link from "next/link";
 
 export default function Header() {
-    const {admin,logoutAdmin}=useAuth();
+    const {admin,logoutAdmin}=useAdminAuth();
   return (
     <header className="text-white">
         <div className="bg-[#131921] flex items-center justify-between p-4 gap-4">

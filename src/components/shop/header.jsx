@@ -1,19 +1,23 @@
 "use client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket, faCartShopping, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
 import { shopMenu } from '@/data/menu';
 import Link from "next/link";
 import { useAuth } from '@/context/AuthContext';
+import { useSelector } from "react-redux";
 
 export default function Header() {
     const {user,logoutUser}=useAuth();
+    const {totalQty} = useSelector((state)=>state.cart)
   return (
     <header className="text-white">
     <div className="bg-[#131921] mx-auto px-4 flex items-center gap-4 py-3">
 
         {/* <!-- Logo --> */}
         <div className="text-2xl font-bold tracking-wide">
-            <a href="#">amaz<span className="text-orange-400">in</span></a>
+            <Link href="/">
+                amaz<span className="text-orange-400">in</span>
+            </Link>
         </div>
         
         {/* <!-- Search --> */}
@@ -32,19 +36,24 @@ export default function Header() {
         {/* <!-- Menu Right --> */}
         <div className="hidden md:flex items-center gap-6 text-sm">
 
-            <div className="hover:underline cursor-pointer">
+            <div className="cursor-pointer">
                 {
                     user?(
                         <div className="flex">
-                            <Link href="#">
-                                <span className="text-sm font-medium">
-                                    {user.name}
+                            <Link href="#" className="hover:text-orange-400 hover:border-orange-400 hover:bg-[#20293a]
+                            transition-colors duration-250 cursor-pointer border-transparent py-2 pl-3 rounded-lg bg-transparent ">
+                                <span className="text-sm font-medium mr-3 ">
+                                    <FontAwesomeIcon icon={faUser} className="w-4 h-4 mr-1"/>{user.name}
                                 </span>
                             </Link>
-                            <button onClick={logoutUser}>Đăng Xuất</button>
+                            <button onClick={logoutUser} className="
+                            hover:text-red-400 hover:border-red-400 hover:bg-[#20293a]
+                            transition-colors duration-250 cursor-pointer border-transparent py-2 px-3 rounded-lg bg-transparent">
+                                <FontAwesomeIcon icon={faArrowRightFromBracket} className="w-4 h-4 mr-1"/>Đăng Xuất
+                            </button>
                         </div>
                     ):(
-                        <Link href="/login">
+                        <Link href="/login" className="hover:underline">
                             <p className="text-xs">Hello, Sign in</p>
                             <p className="font-semibold">Account & Lists</p>
                         </Link>
@@ -52,18 +61,13 @@ export default function Header() {
                 }
             </div>
 
-            <div className="hover:underline cursor-pointer">
-                <p className="text-xs">Returns</p>
-                <p className="font-semibold">& Orders</p>
-            </div>
-
             <div className="relative cursor-pointer">
-                <a href="/login">
-                    <span className="text-xl">🛒</span>
-                    <span className="absolute -top-2 -right-3 bg-orange-500 text-xs px-1 rounded">
-                        2
+                <Link href="/cart">
+                    <FontAwesomeIcon icon={faCartShopping} className="w-5 h-5"/>
+                    <span className="absolute -top-2 -right-[2.5] bg-orange-500 text-xs px-1 rounded">
+                        {totalQty}
                     </span>
-                </a>
+                </Link>
             </div>
 
         </div>
@@ -77,7 +81,11 @@ export default function Header() {
             {shopMenu.map((cate,index) => (
                 <div key={index}
                 className=" hover:text-[#1880e8] mx-0.5">
-                    <a href={cate.href}><p>{cate.label}<span  className="font-[15px] text-[#131921] ml-0.5">{cate.icon}</span></p></a>
+                    <Link href={cate.href}>
+                        <p>{cate.label}
+                            <span className="font-[15px] text-[#131921] ml-0.5">{cate.icon}</span>
+                        </p>
+                    </Link>
                 </div>
             ))}
         </div>
