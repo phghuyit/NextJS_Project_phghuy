@@ -13,7 +13,7 @@ export default function Page() {
         async function fetchDetailProd(){
             try{
                 let api = await getDetailProducts(slug);
-                // console.log(api.data)
+                console.log(api.data)
                 setProd(api.data);
             }catch(error){
                 console.log("Loi khong load duoc");
@@ -30,7 +30,8 @@ export default function Page() {
     if(loading){
         return(<h1 className="text-center">Loading Chi tiet Sản Phẩm...</h1>)
     }
-    return(<>
+    return(
+    <>
     <ProductDetail product={product} />
     </>); 
 }

@@ -35,9 +35,17 @@ export default function ProductDetail({product}){
                     </h1>
 
                     <p className="mt-4 text-2xl font-semibold text-red-400">
-                        {formatPrice(product.price)}
+                        {product.is_on_sale === 1 ? (
+                            <>
+                                <span className="line-through opacity-70 mr-2 text-black text-[16px]">
+                                    {formatPrice(product.price)}
+                                </span>
+                                {formatPrice(product.sale_price)}
+                            </>
+                        ) : (
+                            formatPrice(product.price)
+                        )}
                     </p>
-
                     <p className="mt-6 text-gray-600">
                         {product.description}
                     </p>

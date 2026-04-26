@@ -40,7 +40,7 @@ export default function Header() {
                 {
                     user?(
                         <div className="flex">
-                            <Link href="#" className="hover:text-orange-400 hover:border-orange-400 hover:bg-[#20293a]
+                            <Link href="/account" className="hover:text-orange-400 hover:border-orange-400 hover:bg-[#20293a]
                             transition-colors duration-250 cursor-pointer border-transparent py-2 pl-3 rounded-lg bg-transparent ">
                                 <span className="text-sm font-medium mr-3 ">
                                     <FontAwesomeIcon icon={faUser} className="w-4 h-4 mr-1"/>{user.name}

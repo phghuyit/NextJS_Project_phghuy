@@ -1,5 +1,5 @@
-import createCrudService from "@/services/createCrudService";
-
-const orderServices = createCrudService("/orders", "/ordersByPageSize");
-
-export default orderServices;
+import axiosClient from "@/lib/axiosClient";
+export const getOrder = async () => {
+        const response = await axiosClient.get("/orders");
+        return response.data; 
+};
