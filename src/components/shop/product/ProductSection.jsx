@@ -1,10 +1,11 @@
+import Link from "next/link";
 import ProductCard from "./ProductCard";
 
-export default function ProductSection({title,des,products}){
+export default function ProductSection({title,des,products,url}){
     return(
       <section className="mb-12">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+        <Link href={url}><h2 className="text-2xl font-bold text-gray-900">{title}</h2></Link>
         <p className="mt-2 text-sm text-gray-600">{des}</p>
       </div>
 

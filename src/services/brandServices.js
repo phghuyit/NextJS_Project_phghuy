@@ -1,5 +1,9 @@
-import createCrudService from "@/services/createCrudService";
+import axiosClient from "@/lib/axiosClient";
 
-const brandServices = createCrudService("/brands", "/brandsByPageSize");
+export function getBrandByID(id){
+    return axiosClient.get(`/brandName/${id}`);
+}
 
-export default brandServices;
+export function getBrandAll(){
+    return axiosClient.get(`/brands`);
+}

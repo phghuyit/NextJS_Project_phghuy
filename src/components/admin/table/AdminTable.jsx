@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import categoryServices from "@/services/categoryService";
 import Image from "next/image";
 
+const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
+
 let btnClass="rounded-[5px] border border-gray-200 px-3 py-2  transition duration-300 hover:border-red-300 hover:bg-red-50 cursor-pointer"
 export default function AdminTable({ columns, data,onEdit,onDel,onDetail}) {
   const [cat, setCat] = useState([]);
@@ -68,13 +70,11 @@ export default function AdminTable({ columns, data,onEdit,onDel,onDetail}) {
                 <td key={col.key} className="border border-gray-200 px-4 py-3">
                   <div className="relative w-16 h-16 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
                     <Image 
-                      src={imgSrc || '/placeholder-image.png'} 
+                      src={row['image']?`${STORAGE_URL}${row['image']}`:`/no-image.jpg`} 
                       alt="hình ảnh mô tả sản phẩm" 
                       fill 
                       className="object-cover"
-                      onError={() => {
-                        setImgSrc('/placeholder-image.png'); // Khi link lỗi, đổi sang ảnh backup
-                      }}
+                      unoptimized
                     />
                   </div>
                 </td>

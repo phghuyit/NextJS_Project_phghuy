@@ -11,35 +11,56 @@ const cartSlice = createSlice({
     initialState,
     reducers:{
         setCart(state,action){
-            return action.payload;
+            const loadedState = action.payload || {};
+            const loadedItems = loadedState.items || [];
+            
+            let calcQty = 0;
+            let calcAmount = 0;
+            
+            state.items = loadedItems.map(item => {
+                const currentPrice = item.is_on_sale == 1 ? item.sale_price : item.price;
+                const qty = item.qty || 1;
+                calcQty += qty;
+                calcAmount += (currentPrice * qty);
+                
+                return {
+                    ...item,
+                    qty: qty,
+                    totalPrice: currentPrice * qty
+                };
+            });
+            
+            state.totalQty = calcQty;
+            state.totalAmount = calcAmount;
         },
         addToCart(state,action){
             const newItem = action.payload;
             const existingItem=state.items.find(item=>item.id===newItem.id);
+            const currentPrice =newItem.is_on_sale == 1 ? newItem.sale_price : newItem.price;
 
             state.totalQty++;
-            state.totalAmount+=newItem.price;
-
+            state.totalAmount += currentPrice;
             if(!existingItem){                                                                                                                                    
                 state.items.push({
                     ...newItem,
                     qty:1,
-                    totalPrice: newItem.price
+                    totalPrice: currentPrice
                 });
             }else{
                 existingItem.qty++;
-                existingItem.totalPrice+= newItem.price;
+                existingItem.totalPrice += currentPrice;
             }
         },
         updateQuantity(state,action){
             const data=action.payload;
             const itemUpdate = state.items.find(item=>item.id===data.id);
             if(itemUpdate){
+                const currentPrice =itemUpdate.is_on_sale == 1 ? itemUpdate.sale_price : itemUpdate.price;
                 const diff = data.quantity - itemUpdate.qty;
                 itemUpdate.qty = data.quantity;
-                state.totalAmount += (itemUpdate.price * diff);
+                state.totalAmount += (currentPrice * diff);
                 state.totalQty += diff;
-                itemUpdate.totalPrice = itemUpdate.qty * itemUpdate.price;
+                itemUpdate.totalPrice = itemUpdate.qty * currentPrice;
             }
         },
         removeFromCart(state,action){

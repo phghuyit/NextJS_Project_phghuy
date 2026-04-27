@@ -6,15 +6,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import formatPrice from "@/utils/formatPrice";
 import Image from "next/image";
-import storeOrder from "@/services/checkOutServices";
 import { clearCart } from "@/lib/features/cart/cartSlice";
+import { storeOrder } from "@/services/orderServices";
+const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
 
 export default function Page() {
   const { items, totalQty, totalAmount } = useSelector((state) => state.cart);
   const [user, setUser] = useState(null);
-  const [status, setStatus] = useState("review"); 
+  const [status, setStatus] = useState("review");
   const router = useRouter();
-  const  dispatch=useDispatch();
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -24,26 +26,37 @@ export default function Page() {
     }
   }, [router]);
 
-  const handleConfirmOrder = () => {
+  const handleConfirmOrder = async () => {
+    if (!user?.id) {
+      alert("Không tìm thấy user id. Vui lòng đăng nhập lại trước khi đặt hàng.");
+      return;
+    }
+
     setStatus("submitting");
     const order = {
       user_id: user.id,
-      items: items.map(item=>({
+      items: items.map((item) => ({
         product_id: item.id,
         qty: item.qty,
-        price: item.is_on_sale===1?item.sale_price:item.price,
-      }))
+        price: item.is_on_sale == 1 ? item.sale_price : item.price,
+      })),
     };
-    
-    console.log(order)
-    storeOrder(order);
-    dispatch(clearCart());
-    setTimeout(() => {
+
+    try {
+      await storeOrder(order);
+      dispatch(clearCart());
       setStatus("success");
-    }, 2000);
+    } catch (error) {
+      console.error("Lỗi đặt hàng:", error?.response?.data || error);
+      alert(
+        error?.response?.data?.message ||
+          "Không thể đặt hàng. Vui lòng kiểm tra lại kết nối hoặc thông tin đơn hàng."
+      );
+      setStatus("review");
+    }
   };
 
-  if (!user) return null; // Avoid rendering until user loads from local storage
+  if (!user) return null;
 
   if (status === "submitting") {
     return (
@@ -64,7 +77,8 @@ export default function Page() {
         </div>
         <h1 className="text-3xl font-bold text-gray-800">Đặt hàng thành công!</h1>
         <p className="text-gray-600 max-w-md leading-relaxed">
-          Cảm ơn <span className="font-bold">{user.name}</span> đã mua sắm. Đơn hàng của bạn sẽ sớm được giao đến địa chỉ: <br/>
+          Cảm ơn <span className="font-bold">{user.name}</span> đã mua sắm. Đơn hàng của bạn sẽ sớm được giao đến địa chỉ:
+          <br />
           <span className="font-semibold text-gray-800 block mt-2">{user.address}</span>
         </p>
         <Link
@@ -80,11 +94,13 @@ export default function Page() {
   return (
     <main className="py-12 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-[#0f1111]">
       <h1 className="text-3xl font-bold mb-8 text-center">Xác nhận đơn hàng</h1>
-      
+
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
         <div className="flex justify-between items-center mb-4 border-b border-[#d3d3d3] pb-2">
-            <h2 className="text-xl font-bold">Thông tin giao hàng</h2>
-            <Link href="/cart" className="text-orange-500 hover:text-orange-600 hover:-translate-y-0.5 text-sm font-medium transition-all duration-100">Thay đổi</Link>
+          <h2 className="text-xl font-bold">Thông tin giao hàng</h2>
+          <Link href="/cart" className="text-orange-500 hover:text-orange-600 hover:-translate-y-0.5 ml-1 text-sm font-medium transition-all duration-100 ">
+            Thay đổi
+          </Link>
         </div>
         <div className="space-y-2 text-gray-700">
           <p><span className="font-semibold w-28 inline-block">Họ và tên:</span> {user.name}</p>
@@ -100,7 +116,7 @@ export default function Page() {
             <div key={item.id} className="flex justify-between items-center border-b border-gray-100 pb-4 last:border-0 last:pb-0">
               <div className="flex items-center gap-4">
                 <div className="relative w-16 h-16 bg-gray-50 border border-gray-100 rounded flex items-center justify-center overflow-hidden">
-                  <Image unoptimized fill src={item.image || "https://placehold.co/100"} alt={item.product_name} className=" object-contain" />
+                  <Image unoptimized fill src={item.image ? `${STORAGE_URL}${item.image}` : "/no-image.png"} alt={item.product_name} className="object-contain" />
                 </div>
                 <div>
                   <p className="font-medium line-clamp-1">{item.product_name}</p>
@@ -108,7 +124,7 @@ export default function Page() {
                 </div>
               </div>
               <div className="font-semibold text-gray-800 whitespace-nowrap ml-4">
-                {formatPrice(item.price * item.quantity)}
+                {formatPrice((item.is_on_sale == 1 ? item.sale_price : item.price) * item.qty)}
               </div>
             </div>
           ))}
@@ -121,7 +137,7 @@ export default function Page() {
           <span className="text-orange-700 text-2xl">{formatPrice(totalAmount)}</span>
         </div>
         <button onClick={handleConfirmOrder} className="w-full mt-6 bg-orange-400 hover:bg-orange-500 hover:-translate-y-0.5 text-[#131921] font-bold text-lg py-4 rounded-lg transition duration-300 shadow-sm">
-          Xác nhận Đặt Hàng
+          Xác nhận đặt hàng
         </button>
       </div>
     </main>

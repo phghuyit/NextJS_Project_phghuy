@@ -36,7 +36,8 @@ export default function Page() {
             if (error.response?.status === 422 || error.response?.status === 401) {
                 const validationErrors = error.response.data.errors;
                 if (validationErrors) {
-                    setErr(Object.values(validationErrors).flat());
+                    setErr("Đã xảy ra lỗi hệ thống, vui lòng thử lại.");
+                    console.error(Object.values(validationErrors).flat());
                 } else {
                     setErr([error.response.data.message || "Email hoặc mật khẩu không chính xác."]);
                 }

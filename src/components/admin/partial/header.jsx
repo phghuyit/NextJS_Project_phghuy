@@ -1,6 +1,6 @@
 "use client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell,faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faUser, faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useAdminAuth } from "@/context/AdminContext";
 import Link from "next/link";
 
@@ -22,12 +22,17 @@ export default function Header() {
                     {
                         admin?(
                             <div className="flex">
-                                <Link href="#">
-                                    <span className="text-sm font-medium">
-                                        {admin.name}
+                                <Link href="#" className="hover:text-orange-400 hover:border-orange-400 hover:bg-[#20293a]
+                                transition-colors duration-250 cursor-pointer border-transparent py-2 pl-3 rounded-lg bg-transparent">
+                                    <span className="text-sm font-medium mr-3">
+                                        <FontAwesomeIcon icon={faUser} className="w-4 h-4 mr-1"/>{admin.name}
                                     </span>
                                 </Link>
-                                <button onClick={logoutAdmin}>Đăng Xuất</button>
+                                <button onClick={logoutAdmin} className="
+                                hover:text-red-400 hover:border-red-400 hover:bg-[#20293a]
+                                transition-colors duration-250 cursor-pointer border-transparent py-2 px-3 rounded-lg bg-transparent">
+                                    <FontAwesomeIcon icon={faArrowRightFromBracket} className="w-4 h-4 mr-1"/>Đăng Xuất
+                                </button>
                             </div>
                         ):(
                             <Link href="/admin/login">

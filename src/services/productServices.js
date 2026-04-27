@@ -8,11 +8,6 @@ export function filterByPriceRange(products,min,max){
     return products.filter(items=>items.price<=max&&items.price>=min)
 };
 
-export function searchProduct(products,keyword){
-    keyword=keyword.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-    return products.filter(items=>items.name.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(keyword));
-}
-
 export function sortByPrice(products,order="asc"){
     return order==="desc"?products.sort(function(a,b){return b.price-a.price;} ):
     products.sort(function(a,b){return a.price-b.price;} );
@@ -46,11 +41,23 @@ export async function getHotProducts(param=4){
     const res= await axiosClient.get(`/hotProducts/${param}`);
     return res;
 }
-
+export async function searchProduct(keyword){
+    const res= await axiosClient.get(`/searchProducts/${keyword}`);
+    return res;
+}
 export function getProductById(id){
     return axiosClient.get(`/products/${id}`);
 }
 
+export function getProductByBrandId(brandId){
+    return axiosClient.get(`/productsByBrandId/${brandId}`);
+}
+export function getProductByCategoryId(categoryId){
+    return axiosClient.get(`/productsByCategoryId/${categoryId}`);
+}
+export function getProductByCategorySlug(slug){
+    return axiosClient.get(`/productsByCategorySlug/${slug}`);
+}
 export function createProduct(data){
     return axiosClient.post("/products", data);
 }

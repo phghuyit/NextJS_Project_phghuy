@@ -10,6 +10,9 @@ const categoryServices = {
     getCatById(id){
         return axiosClient.get(`/showById/${id}`);
     },
+    getCatBySlug(slug){
+        return axiosClient.get(`/showBySlug/${slug}`);
+    },
     createCategory(data){
         return axiosClient.post("/categories",data);
     },

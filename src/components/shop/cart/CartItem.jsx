@@ -1,16 +1,18 @@
 import Image from "next/image";
 import  formatPrice  from '@/utils/formatPrice';
+import { product } from "@/data/product";
 export default function CartItem({ item, onUpdateQuantity, onRemove }) {
-    
-    const { id, product_name, image, price, qty = 1 } = item;
-
+const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
+const { id, product_name, image, price,sale_price, qty = 1,is_on_sale=0 } = item;
+const currentPrice = is_on_sale == 1 ? sale_price : price;
+console.log(item)
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border-b border-gray-200 bg-white rounded-lg shadow-sm mb-4 gap-4">
           
             <div className="flex items-center gap-4 w-full sm:w-auto">
                 <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
                     <Image
-                        src={image || '/placeholder-image.png'}
+                        src={image?`${STORAGE_URL}${image}`:"/no-image/jpg"}
                         alt={product_name}
                         className="w-full h-full object-cover"
                         fill
@@ -20,7 +22,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }) {
                 <div className="flex flex-col">
                     <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">{product_name}</h3>
                     <p className="text-gray-500 font-medium mt-1">
-                        {formatPrice(price)}
+                        {formatPrice(currentPrice)}
                     </p>
                 </div>
             </div>
@@ -47,7 +49,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }) {
                 </div>
 
                 <div className="text-right min-w-[100px]">
-                    <p className="text-lg font-bold text-blue-600">{formatPrice(price * qty)}</p>
+                    <p className="text-lg font-bold text-blue-600">{formatPrice(currentPrice * qty)}</p>
                 </div>
 
                 <button

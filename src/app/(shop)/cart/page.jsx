@@ -14,7 +14,8 @@ export default function Page() {
   const dispatch = useDispatch();
   const { items, totalQty, totalAmount } = useSelector((state) => state.cart);
   const data = useSelector((state) => state.cart);
-
+  // console.log(items);
+  console.log(totalAmount);
   const [user, setUser] = useState({ name: '', phone: '', address: '' });
 
   useEffect(() => {
@@ -35,7 +36,6 @@ export default function Page() {
     localStorage.setItem('user', JSON.stringify(updatedUser)); 
   };
 
-  console.log(data)
   const handleUpdateQuantity = (id, quantity) => {
     if (quantity > 0) {
       dispatch(updateQuantity({ id, quantity }));

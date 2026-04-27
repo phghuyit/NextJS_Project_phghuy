@@ -1,55 +1,162 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getOrder } from "@/services/orderServices";
-import OrderItem from "@/components/shop/orders/OrderItem.jsx";
-import Link from "next/link";
+import { getOrderByUser } from "@/services/orderServices";
+import formatPrice from "@/utils/formatPrice";
+import { useRouter } from "next/navigation";
+import userServices from "@/services/userServices";
+import OrderAccountItem from "@/components/shop/orders/OrderAccountItem";
 
 export default function AccountPage() {
+  const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isEdit, setEdit] = useState(false);
+  const [form, setForm] = useState({ name: "", phone: "", address: "", gender: "", birthday: "" });
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const data = await getOrder();
-        setOrders(data || []);
-      } catch (error) {
-        console.error("Failed to load orders", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchOrders();
-  }, []);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      fetchOrders(parsedUser.id);
+    } else {
+      router.push("/login");
+    }
+  }, [router]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <div className="w-10 h-10 border-4 border-orange-400 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  const fetchOrders = async (userId) => {
+    try {
+      setLoading(true);
+      const res = await getOrderByUser(userId);
+      // Fallback to res.data if the API returns wrapped data
+      setOrders(res.data || res || []);
+    } catch (err) {
+      console.error("Failed to fetch orders:", err);
+      setError("Không thể tải danh sách đơn hàng.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFormChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    try {
+      await userServices.update(user.id, form);
+      const updatedUser = { ...user, ...form };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setEdit(false);
+      alert("Cập nhật thông tin thành công!");
+    } catch (err) {
+      console.error("Failed to update profile:", err.errors);
+      alert("Không thể cập nhật. Vui lòng thử lại sau.");
+    }
+  };
+
+  if (!user) return null; // Alternatively, return a full-page loading spinner here
 
   return (
-    <main className="py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-[#0f1111]">
-      <h1 className="text-2xl font-bold mb-6 border-b border-[#d3d3d3] pb-4">Lịch sử đơn hàng của bạn</h1>
+    <main className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-[#0f1111]">
+      <h1 className="text-3xl font-bold mb-8 text-gray-800">Tài khoản của tôi</h1>
       
-      {orders.length === 0 ? (
-        <div className="text-center py-10 bg-white rounded-lg shadow-sm border border-gray-200">
-          <p className="text-gray-600 mb-4">Bạn chưa có đơn hàng nào.</p>
-          <Link href="/products" className="text-orange-500 hover:text-orange-600 font-semibold">
-            Tiếp tục mua sắm
-          </Link>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <div className="md:col-span-1 bg-white p-6 rounded-lg shadow-sm border border-gray-200 h-fit">
+          <h2 className="text-xl font-bold mb-4 border-b border-[#d3d3d3] pb-2">Thông tin cá nhân</h2>
+          <div className="space-y-3 text-gray-700">
+            <p><span className="font-semibold block text-sm text-gray-500">Họ và tên</span> {user.name}</p>
+            <p><span className="font-semibold block text-sm text-gray-500">Email</span> {user.email || 'Chưa cập nhật'}</p>
+            <p><span className="font-semibold block text-sm text-gray-500">Số điện thoại</span> {user.phone}</p>
+            <p><span className="font-semibold block text-sm text-gray-500">Địa chỉ</span> {user.address}</p>
+            <p><span className="font-semibold block text-sm text-gray-500">Giới tính</span> {user.gender === '0' ? 'Nam' : user.gender === '1' ? 'Nữ':'Chưa cập nhật'}</p>
+            <p><span className="font-semibold block text-sm text-gray-500">Ngày sinh</span> {user.birthday ? new Date(user.birthday).toLocaleDateString("vi-VN") : 'Chưa cập nhật'}</p>
+          </div>
+          <button 
+            onClick={() => {
+              setForm({ name: user.name || "", phone: user.phone || "", address: user.address || "", gender: user.gender || "", birthday: user.birthday || "" });
+              setEdit(true);
+            }} 
+            className="mt-6 w-full bg-orange-400 hover:bg-orange-500 cursor-pointer font-bold py-2 px-4 rounded transition duration-300 shadow-sm"
+          >
+            Chỉnh sửa Profile
+          </button>
+
+          
+          <div className={`fixed inset-0 z-20 flex items-center justify-center bg-gray-800/60 ${isEdit ? '' : 'hidden'}`}>
+            <form 
+              onSubmit={handleUpdateProfile} 
+              className="bg-white p-8 rounded-lg shadow-xl w-[90%] max-w-md flex flex-col gap-4"
+            >
+              <h3 className="text-2xl font-bold mb-2 text-gray-800">Cập nhật thông tin</h3>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
+                <input type="text" name="name" value={form.name} onChange={handleFormChange} className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+                <input type="tel" name="phone" value={form.phone} onChange={handleFormChange} className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400" required />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Giới tính</label>
+                  <select name="gender" value={form.gender} onChange={handleFormChange} className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400">
+                    <option value="" disabled>Chọn giới tính</option>
+                    <option value="0">Nam</option>
+                    <option value="1">Nữ</option>
+                    
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ngày sinh</label>
+                  <input type="date" name="birthday" value={form.birthday} onChange={handleFormChange} className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ</label>
+                <textarea name="address" value={form.address} onChange={handleFormChange} className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-400" rows="3" required />
+              </div>
+              <div className="flex justify-end gap-3 mt-4">
+                <button type="button" onClick={() => setEdit(false)} className="px-5 py-2 border border-gray-300 rounded font-medium text-gray-700 hover:bg-gray-50 transition">
+                  Hủy
+                </button>
+                <button type="submit" className="px-5 py-2 bg-orange-400 font-bold rounded text-[#131921] hover:bg-orange-500 shadow-sm transition">
+                  Cập nhật
+                </button>
+              </div>
+            </form>
+          </div>
+          
         </div>
-      ) : (
-        <div className="space-y-6">
-          {orders.map((order) => (
-            <OrderItem key={order.id} order={order} />
-          ))}
+        
+        <div className="md:col-span-3 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h2 className="text-xl font-bold mb-4 border-b border-[#d3d3d3] pb-2">Đơn hàng của bạn</h2>
+          {loading ? (
+            <div className="animate-pulse space-y-4">
+              {[1, 2, 3].map(i => <div key={i} className="h-24 bg-gray-100 rounded-lg"></div>)}
+            </div>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : orders && orders.length > 0 ? (
+            <div className="space-y-4">
+              {orders.map((order) => (
+                <OrderAccountItem key={order.id} order={order}/>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+              Bạn chưa có đơn hàng nào.
+            </div>
+          )}
         </div>
-      )}
+        
+      </div>
     </main>
   );
 }

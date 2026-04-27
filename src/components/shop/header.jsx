@@ -1,15 +1,39 @@
 "use client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightFromBracket, faCartShopping, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
-import { shopMenu } from '@/data/menu';
+import { faArrowRightFromBracket, faCaretDown, faCaretLeft, faCartShopping, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useAuth } from '@/context/AuthContext';
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { getMenuByPosition } from "@/services/menuServices";
+import standardized from "@/utils/standardized";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
     const {user,logoutUser}=useAuth();
     const {totalQty} = useSelector((state)=>state.cart)
+    const [menu, setMenu] = useState([]);
+    const router=useRouter();
+    useEffect(() => {
+        async function fetchMenu() {
+            try {
+                const res = await getMenuByPosition("mainmenu");
+                setMenu(res?.data || res || []);
+                // console.log(res);
+            } catch (error) {
+                console.error("Failed to fetch menu:", error);
+            }
+        }
+        fetchMenu();
+    }, []);
+
+    function handleSubmit(e){
+        e.preventDefault();
+        let keyword=standardized(String(e.target.keyword.value));
+        router.push(`/products/search/${keyword}`);
+    }
   return (
+    
     <header className="text-white">
     <div className="bg-[#131921] mx-auto px-4 flex items-center gap-4 py-3">
 
@@ -21,13 +45,14 @@ export default function Header() {
         </div>
         
         {/* <!-- Search --> */}
-        <form action="" className="flex flex-1">
+        <form onSubmit={handleSubmit} className="flex flex-1">
             <input 
+                name="keyword"
                 type="text" 
                 placeholder="Search Kindle eBooks"
                 className="w-full px-4 py-2 text-black rounded-l-md focus:outline-none bg-white"
             />
-            <button className="bg-orange-400 hover:bg-orange-500 px-5 rounded-r-md text-black font-semibold">
+            <button type="submit" className="bg-orange-400 hover:bg-orange-500 px-5 rounded-r-md text-black font-semibold">
                 <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4"/>
             </button>
         </form>
@@ -78,16 +103,42 @@ export default function Header() {
             <Link href="/"><img src="https://m.media-amazon.com/images/G/01/books-voyager/subnav/Subnav_BooksLogo.svg" alt="logo_ebook_amazon" /></Link>
         </div>
         <div className='flex flex-1 justify-center gap-10'>
-            {shopMenu.map((cate,index) => (
-                <div key={index}
-                className=" hover:text-[#1880e8] mx-0.5">
-                    <Link href={cate.href}>
-                        <p>{cate.label}
-                            <span className="font-[15px] text-[#131921] ml-0.5">{cate.icon}</span>
-                        </p>
-                    </Link>
-                </div>
-            ))}
+            {menu.map((item,index) => {
+                // console.log(item);
+                return (
+                    <div key={item.id || index}
+                    className="group hover:text-[#1880e8] mx-0.5 relative py-2">
+                        <Link href={item.link || "#"}>
+                            <p>{item.name}</p>
+                        </Link>
+                        {item.children && item.children.length > 0 && (
+                            <ul className="absolute top-full left-0 hidden group-hover:block bg-white text-[#414c59] shadow-md border border-gray-100 rounded mt-1 min-w-50 z-50 after:content-[''] after:absolute after:h-2 after:w-full after:-top-2 after:left-0">
+                                {item.children.map((child, cIndex) => (
+                                    <li key={child.id || cIndex} className="relative group/sub">
+                                        <Link href={child.link || "#"} className="flex justify-between items-center px-4 py-2 hover:bg-gray-100 hover:text-orange-500">
+                                            {child.name}
+                                            {child.children && child.children.length > 0 && (
+                                                <span className="text-xs ml-2 opacity-70 group-hover/sub:-rotate-90 transition-transform duration-500"><FontAwesomeIcon icon={faCaretDown} /></span>
+                                            )}
+                                        </Link>
+                                        {child.children && child.children.length > 0 && (
+                                            <ul className="absolute top-0 left-full hidden group-hover/sub:block bg-white text-[#414c59] shadow-md border border-gray-100 rounded min-w-50 z-50 after:content-[''] after:absolute after:w-2 after:h-full after:-left-2 after:top-0">
+                                                {child.children.map((subChild, sIndex) => (
+                                                    <li key={subChild.id || sIndex}>
+                                                        <Link href={subChild.link || "#"} className="block px-4 py-2 hover:bg-gray-100 hover:text-orange-500">
+                                                            {subChild.name}
+                                                        </Link>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                );
+            })}
         </div>
     </div>
 </header>
