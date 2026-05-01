@@ -17,7 +17,7 @@ export default function Header() {
     useEffect(() => {
         async function fetchMenu() {
             try {
-                const res = await getMenuByPosition("mainmenu");
+                const res = await getMenuByPosition();
                 setMenu(res?.data || res || []);
                 // console.log(res);
             } catch (error) {

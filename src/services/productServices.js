@@ -25,9 +25,20 @@ export async function getProductsByPageSize(params={}){
     const res= await axiosClient.get("/productsByPageSize",{params});
     return res;
 }
-export async function getTrashedProducts(params={}){
+export async function getActiveProductsByPageSize(params={}){
+    const res= await axiosClient.get("/activeProductsByPageSize",{params});
+    return res;
+}
+export async function getProductsByStartLimit(params={}){
+    const res= await axiosClient.get("/productsByStartLimit",{params});
+    return res;
+}
+export async function getTrashedProductsByPageSize(params={}){
     const res= await axiosClient.get("/trashedProductsByPageSize",{params});
     return res;
+}
+export async function getTrashedProducts(params={}){
+    return getTrashedProductsByPageSize(params);
 }
 export async function getNewProducts(param=4){
     const res= await axiosClient.get(`/newProducts/${param}`);
@@ -58,6 +69,9 @@ export function getProductByCategoryId(categoryId){
 export function getProductByCategorySlug(slug){
     return axiosClient.get(`/productsByCategorySlug/${slug}`);
 }
+export function getProductByBrandSlug(slug){
+    return axiosClient.get(`/productsByBrandSlug/${slug}`);
+}
 export function createProduct(data){
     return axiosClient.post("/products", data);
 }
@@ -73,14 +87,42 @@ export async function updateProduct(id, data){
 export function deleteProduct(id){
     return axiosClient.delete(`/products/${id}`);
 }
+export function restoreProduct(id){
+    return axiosClient.patch(`/products/${id}/restore`);
+}
+export function forceDeleteProduct(id){
+    return axiosClient.delete(`/products/${id}/force`);
+}
+export function updateProductStatus(id, data){
+    return axiosClient.patch(`/updateStatus/${id}`, data);
+}
 
 const productServices = {
+    filterByCategory,
+    filterByPriceRange,
+    sortByPrice,
     getAll: getProducts,
+    getDetailProducts,
     getByPageSize: getProductsByPageSize,
+    getActiveProductsByPageSize,
+    getProductsByStartLimit,
+    getTrashedProducts,
+    getTrashedProductsByPageSize,
+    getNewProducts,
+    getSaleProducts,
+    getHotProducts,
+    searchProduct,
     getById: getProductById,
+    getProductByBrandId,
+    getProductByCategoryId,
+    getProductByCategorySlug,
+    getProductByBrandSlug,
     create: createProduct,
     update: updateProduct,
     delete: deleteProduct,
+    restoreProduct,
+    forceDeleteProduct,
+    updateProductStatus
 };
 
 export default productServices;

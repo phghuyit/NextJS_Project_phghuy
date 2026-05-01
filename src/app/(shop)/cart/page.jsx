@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import {
   updateQuantity,
   removeFromCart,
+  clearCart,
 } from "@/lib/features/cart/cartSlice";
 import CartItem from "@/components/shop/cart/CartItem";
 import formatPrice from "@/utils/formatPrice";
@@ -50,6 +51,12 @@ export default function Page() {
     }
   };
 
+  const handleClearCart = () => {
+    if (window.confirm("Bạn có chắc muốn xóa tất cả sản phẩm khỏi giỏ hàng?")) {
+      dispatch(clearCart());
+    }
+  };
+
   if (!items || items.length===0) {
     return (
       <main className="py-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -77,7 +84,12 @@ export default function Page() {
         <div className="flex-2 w-full bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="mb-4 flex justify-between items-end border-b border-[#d3d3d3] pb-2">
             <h1 className="capitalize font-bold text-3xl">Giỏ hàng</h1>
-            <span className="text-gray-500 text-sm hidden sm:block">Giá</span>
+            <div className="flex items-center gap-4">
+              <button onClick={handleClearCart} className="text-red-500 hover:text-red-700 text-sm font-medium transition-colors cursor-pointer">
+                Xóa tất cả
+              </button>
+              <span className="text-gray-500 text-sm hidden sm:block">Giá</span>
+            </div>
           </div>
 
           <div className="my-6 space-y-4">

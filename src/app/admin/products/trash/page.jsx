@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {getTrashedProducts} from "@/services/productServices";
+import productServices, { getTrashedProducts } from "@/services/productServices";
 import AdminTable from "@/components/admin/table/AdminTable";
 import Pagination from "@/components/common/Pagination";
 import { useRouter } from "next/navigation";

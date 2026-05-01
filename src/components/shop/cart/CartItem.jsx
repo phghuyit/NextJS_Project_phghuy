@@ -1,6 +1,8 @@
 import Image from "next/image";
 import  formatPrice  from '@/utils/formatPrice';
 import { product } from "@/data/product";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 export default function CartItem({ item, onUpdateQuantity, onRemove }) {
 const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
 const { id, product_name, image, price,sale_price, qty = 1,is_on_sale=0 } = item;
@@ -57,7 +59,7 @@ console.log(item)
                     className="text-red-500 hover:text-red-700 transition-colors p-2 bg-red-50 hover:bg-red-100 rounded-full"
                     aria-label="Remove item"
                 >
-                    xoa
+                   <FontAwesomeIcon icon={faTrash} />
                 </button>
             </div>
         </div>
