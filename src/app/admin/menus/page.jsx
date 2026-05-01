@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import menuServices from "@/services/menuServices";
+import {getByPageSize,softDeleteMenu,updateMenu} from "@/services/menuServices";
 import AdminTable from "@/components/admin/table/AdminTable";
 import Pagination from "@/components/common/Pagination";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ export default function Page() {
   useEffect(() => {
     async function fetchMenus() {
       try {
-        const api = await menuServices.getByPageSize({
+        const api = await getByPageSize({
           "pagination[page]": page,
           "pagination[pageSize]": PAGES_SIZE,
         });
@@ -49,10 +49,6 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleDetail(row) {
-    router.push(`/admin/menus/${row.id}`);
-  }
-
   function handleEdit(row) {
     router.push(`/admin/menus/${row.id}/edit`);
   }
@@ -60,7 +56,7 @@ export default function Page() {
   async function handleDel(rowid) {
     if (!window.confirm("Bạn có chắc chắn muốn xóa menu?")) return;
     try {
-      await menuServices.delete(rowid);
+      await softDeleteMenu(rowid);
       alert("Xóa menu thành công!");
       setMenus((prev) => prev.filter((item) => item.id !== rowid));
     } catch (error) {
@@ -86,7 +82,7 @@ export default function Page() {
       </div>
 
       <div className="flex justify-center flex-col">
-        <AdminTable columns={col} data={menus} onDetail={handleDetail} onEdit={handleEdit} onDel={handleDel} />
+        <AdminTable columns={col} data={menus} onEdit={handleEdit} onDel={handleDel} />
         {!loading && pagination && pagination.pageCount > 1 && (
           <Pagination currentPage={pagination.page} pageCount={pagination.pageCount} onPageChange={handlePageChange} />
         )}

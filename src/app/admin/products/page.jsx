@@ -53,10 +53,6 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleDetail(row) {
-    router.push(`/admin/products/${row.id}`);
-  }
-
   function handleEdit(row) {
     router.push(`/admin/products/${row.id}/edit`);
   }
@@ -70,7 +66,7 @@ export default function Page() {
       setProducts((prev) => prev.filter((item) => item.id !== rowid));
     } catch (error) {
       console.error(error);
-      alert("Lỗi xóa sản phẩm trên Backend API!");
+      alert(error.message);
     }
   }
 
@@ -111,7 +107,7 @@ export default function Page() {
       </div>
 
       <div className="flex justify-center flex-col">
-        <AdminTable columns={col} data={products} onDetail={handleDetail} onEdit={handleEdit} onDel={handleDel} />
+        <AdminTable columns={col} data={products} onEdit={handleEdit} onDel={handleDel} />
         {!loading && pagination && pagination.pageCount > 1 && (
           <Pagination currentPage={pagination.page} pageCount={pagination.pageCount} onPageChange={handlePageChange} />
         )}

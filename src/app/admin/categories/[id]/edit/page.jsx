@@ -15,7 +15,6 @@ export default function Page() {
     status: 1,
     description: ''
   });
-  const [imageFile, setImageFile] = useState(null);
   const [load,setLoad]=useState(true);
   const [err,setErr]=useState(null);
   const [cats, setCats] = useState([]);
@@ -59,11 +58,7 @@ export default function Page() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCat(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
+    setCat(cat => ({ ...cat, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -71,17 +66,7 @@ export default function Page() {
     setLoad(true);
     setErr(null);
     try {
-      const formData = new FormData();
-      formData.append('category_name', cat.category_name);
-      formData.append('parent_id', cat.parent_id);
-      formData.append('sort_order', cat.sort_order);
-      formData.append('status', cat.status);
-      formData.append('description', cat.description);
-      if (imageFile) {
-        formData.append('image', imageFile);
-      }
-      
-      await categoryServices.updateCat(id,formData);
+      await categoryServices.updateCat(id, cat);
       alert("Cập nhật danh mục thành công!");
       router.push('/admin/categories');
     } catch (error) {
@@ -154,7 +139,6 @@ export default function Page() {
               </select>
             </div>
 
-            {/* Sắp xếp */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Sắp Xếp (Sort Order)</label>
               <input 
@@ -166,8 +150,7 @@ export default function Page() {
                 placeholder="1" 
               />
             </div>
-            {/*danh sach don hang */}
-            {/* Trạng thái */}
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Trạng Thái</label>
               <select 
@@ -179,16 +162,6 @@ export default function Page() {
                 <option value="1">Hiển thị</option>
                 <option value="0">Ẩn</option>
               </select>
-            </div>
-
-            {/* Hình ảnh */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hình Ảnh</label>
-              <input 
-                type="file" 
-                onChange={handleImageChange}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
-              />
             </div>
           </div>
 

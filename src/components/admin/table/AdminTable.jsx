@@ -1,6 +1,6 @@
 "use client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faPenToSquare,faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare,faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import formatPrice from './../../../utils/formatPrice';
 import { useState, useEffect } from "react";
 import categoryServices from "@/services/categoryService";
@@ -9,7 +9,7 @@ import Image from "next/image";
 const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
 
 let btnClass="rounded-[5px] border border-gray-200 px-3 py-2  transition duration-300 hover:border-red-300 hover:bg-red-50 cursor-pointer"
-export default function AdminTable({ columns, data,onEdit,onDel,onDetail}) {
+export default function AdminTable({ columns, data,onEdit,onDel}) {
   const [cat, setCat] = useState([]);
   const [imgSrc, setImgSrc] = useState();
   useEffect(() => {
@@ -82,10 +82,6 @@ export default function AdminTable({ columns, data,onEdit,onDel,onDetail}) {
             ))}
             <td className="border border-gray-200 px-4 py-3">
                 <div className="flex items-center justify-center gap-3">
-                    <button className={`text-blue-500 ${btnClass}`} 
-                    onClick={()=>onDetail(row)}>
-                        <FontAwesomeIcon icon={faEye} className="w-6 h-6" />
-                    </button>
                     <button className={`text-[#131921] ${btnClass}`} 
                     onClick={()=>onEdit(row)}>
                         <FontAwesomeIcon icon={faPenToSquare} className="w-6 h-6" />

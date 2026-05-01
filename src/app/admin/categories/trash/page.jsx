@@ -5,12 +5,13 @@ import Pagination from "@/components/common/Pagination";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate, faXmark,  } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/navigation";
 
 export default function TrashPage() {
   const [cate, setCate] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const router= useRouter();
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const PAGES_SIZE = 5;
@@ -45,8 +46,9 @@ export default function TrashPage() {
     if (!window.confirm("Bạn có chắc chắn muốn khôi phục danh mục này?")) return;
     try {
       await categoryServices.restoreCategory(id);
-      alert("Khôi phục thành công!");
-      fetchTrashedCate(); // Refresh list
+      if(confirm("Khôi phục thành công! Bạn có muốn quay lại trang quản lý danh mục?")){
+        router.back();
+      }else{fetchTrashedCate();}
     } catch (error) {
       console.error(error);
       alert("Có lỗi xảy ra khi khôi phục.");

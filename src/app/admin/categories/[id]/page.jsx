@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import categoryServices from "@/services/categoryService";
+import getImageSrc from "@/utils/getImageSrc";
 
 export default function Page() {
   const params = useParams();
@@ -100,10 +101,11 @@ export default function Page() {
             <span className="font-semibold text-gray-700 block mb-2">Hình Ảnh:</span>
             {cate.image ? (
               <Image 
-                src={cate.image} 
+                src={getImageSrc(cate.image)} 
                 alt={cate.category_name} 
                 width={320} 
                 height={320}
+                unoptimized
                 className="max-w-xs h-auto rounded shadow-md border border-gray-200" 
               />
             ) : (

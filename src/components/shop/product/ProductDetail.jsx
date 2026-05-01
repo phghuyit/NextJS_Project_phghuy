@@ -4,9 +4,8 @@ import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import categoryServices from "@/services/categoryService";
-import { getBrandByID } from "@/services/brandServices";
-
-const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
+import { getBrandNameByID } from "@/services/brandServices";
+import getImageSrc from "@/utils/getImageSrc";
 export default function ProductDetail({product}){
     const dispatch = useDispatch();
     const [cat, setCat] = useState("");
@@ -22,9 +21,12 @@ export default function ProductDetail({product}){
                     console.error("Lỗi tải dữ liệu danh mục: " + error);
                 }
             }
+            console.log("tac gia",product)
             if (product?.brand_id) {
                 try {
-                    const brandRes = await getBrandByID(product.brand_id);
+                    const brandRes = await getBrandNameByID(product.brand_id);
+
+                    console.log("tac gia",brandRes)
                     setBrand(brandRes.data ? brandRes.data.name : brandRes.name || "");
                 } catch (error) {
                     console.error("Lỗi tải dữ liệu tác giả/thương hiệu: " + error);
@@ -43,7 +45,7 @@ export default function ProductDetail({product}){
             <div className="grid gap-8 md:grid-cols-[45%_1fr]">
                 <div className="flex min-h-80 items-center justify-center rounded-[5px] border border-gray-100 bg-gray-50 p-6">
                     <Image
-                        src={product.image?`${STORAGE_URL}${product.image}`:`/no-image.jpg`}
+                        src={getImageSrc(product.image)}
                         alt={product.product_name}
                         width={300}
                         height={300}

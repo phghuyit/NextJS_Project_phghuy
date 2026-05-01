@@ -6,28 +6,33 @@ import { useState, useEffect } from "react";
 import {
   updateQuantity,
   removeFromCart,
+  clearCart,
 } from "@/lib/features/cart/cartSlice";
 import CartItem from "@/components/shop/cart/CartItem";
 import formatPrice from "@/utils/formatPrice";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router=useRouter()
   const dispatch = useDispatch();
   const { items, totalQty, totalAmount } = useSelector((state) => state.cart);
-  const data = useSelector((state) => state.cart);
   // console.log(items);
-  console.log(totalAmount);
-  const [user, setUser] = useState({ name: '', phone: '', address: '' });
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (user) {
+    const storedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('accessToken');
+
+    if (storedUser && token) {
       try {
-        setUser(JSON.parse(user));
+        setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error("Failed to parse user info", error);
       }
+    } else {
+      router.push("/login");
     }
-  }, []);
+  }, [router]);
 
   const handleUserChange = (e) => {
     const { name, value } = e.target;
@@ -47,6 +52,12 @@ export default function Page() {
   const handleRemoveItem = (id) => {
     if (window.confirm("Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?")) {
       dispatch(removeFromCart(id));
+    }
+  };
+
+  const handleClearCart = () => {
+    if (window.confirm("Bạn có chắc muốn xóa tất cả sản phẩm khỏi giỏ hàng?")) {
+      dispatch(clearCart());
     }
   };
 
@@ -71,13 +82,23 @@ export default function Page() {
     );
   }
 
+  if (!user) return null;
+
   return (
     <main className="py-8 max-w-7xl px-4 sm:px-6 lg:px-8 text-[#0f1111]">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
         <div className="flex-2 w-full bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="mb-4 flex justify-between items-end border-b border-[#d3d3d3] pb-2">
-            <h1 className="capitalize font-bold text-3xl">Giỏ hàng</h1>
-            <span className="text-gray-500 text-sm hidden sm:block">Giá</span>
+            <div className="flex items-baseline gap-4">
+              <h1 className="capitalize font-bold text-3xl">Giỏ hàng</h1>
+              <button 
+                onClick={handleClearCart}
+                className="text-sm font-medium text-red-400 hover:text-red-500 cursor-pointer transition-all hover:-translate-y-2 duration-300"
+              >
+                Xóa tất cả
+              </button>
+            </div>
+            <span className="text-gray-500 text-sm hidden sm:block select-none">Giá</span>
           </div>
 
           <div className="my-6 space-y-4">

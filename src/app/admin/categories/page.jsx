@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import categoryServices from "@/services/categoryService";
-import AdminTable from "@/components/admin/table/AdminTable";
 import Pagination from "@/components/common/Pagination";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import  AdminTable  from '@/components/admin/table/AdminTable';
 
 export default function Page() {
   const [cate, setCate] = useState([]);
@@ -48,10 +48,6 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleDetail(row) {
-    router.push(`/admin/categories/${row.id}`);
-  }
-
   function handleEdit(row) {
     router.push(`/admin/categories/${row.id}/edit`);
   }
@@ -64,8 +60,8 @@ export default function Page() {
       alert("Xóa danh mục thành công!");
       setCate((prevCate) => prevCate.filter((item) => item.id !== rowid));
     } catch (error) {
-      console.error(error);
-      alert("Lỗi 404: Không tìm thấy đường dẫn xóa trên Backend API!");
+      console.error(error.message);
+      alert(error.message);
     }
   }
 
@@ -105,8 +101,8 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="flex justify-center flex-col">
-        <AdminTable columns={col} data={cate} onDetail={handleDetail} onEdit={handleEdit} onDel={handleDel} />
+      <div className="flex justify-center flex-col mb-6">
+        <AdminTable columns={col} data={cate} onEdit={handleEdit} onDel={handleDel} />
         {!loading && pagination && pagination.pageCount > 1 && (
           <Pagination currentPage={pagination.page} pageCount={pagination.pageCount} onPageChange={handlePageChange} />
         )}

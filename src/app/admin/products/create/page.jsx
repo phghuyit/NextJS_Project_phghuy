@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import categoryServices from '@/services/categoryService.js';
 import {createProduct} from '@/services/productServices';
 import standardized from '@/utils/standardized';
+import { getBrandAll } from '@/services/brandServices';
 export default function CreateProductPage() {
     const router = useRouter();
     const inputClass = "border border-gray-300 focus:ring-blue-200 focus:ring-2 focus:border-blue-400 outline-none h-10 px-3 rounded-md w-full text-base duration-300 transition-all";
@@ -21,7 +22,7 @@ export default function CreateProductPage() {
         description: '',
         image: '' ,
         price: '',
-        // brand_id: '',
+        brand_id: '',
         qty: '',
         status: '1',
         is_on_sale: '0',
@@ -52,11 +53,19 @@ export default function CreateProductPage() {
         try{
             const formData = new FormData();
             Object.entries(form).forEach(([key,value])=>{
-                if(value!=null&&value!="")
-                formData.append(key,value);
+            if (value == null || value === "") return;
+
+            if (key === "image") {
+                const file = value?.originFileObj || value;
+                if (file instanceof File || file instanceof Blob) {
+                    formData.append("image", file);
+                }
+                return;
+            }
+            formData.append(key, value);
             })
             await createProduct(formData);
-            if(confirm("Tạo sản phẩm thành công có muốn chuyển về trang đăng nhập?"))
+            if(confirm("Tạo sản phẩm thành công có muốn chuyển về trang quản lý sản phẩm?"))
             router.push("/admin/products"); 
             else setLoad(false);
         }catch(err){
@@ -71,16 +80,16 @@ export default function CreateProductPage() {
             setCat(res.categories);
         }
     };
-    // async function fetchBrands(){
-    //     const res=await brandServices.getAll();
+    async function fetchBrands(){
+        const res=await getBrandAll();
         
-    //     if(res){
-    //         setBrand(res.brands);
-    //     }
-    // };
+        if(res){
+            setBrand(res.data);
+        }
+    };
     useEffect(()=>{
         fetchCats();
-        // fetchBrands();
+        fetchBrands();
     },[]);
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
@@ -154,7 +163,7 @@ export default function CreateProductPage() {
                     </div>
 
                     <div>
-                        <label htmlFor="status" className={labelClass}>Trạng thái</label>
+                        <label className={labelClass}>Trạng thái</label>
                         <select
                             id="status"
                             name="status"
@@ -166,20 +175,21 @@ export default function CreateProductPage() {
                         </select>
                     </div>
 
-                    {/* <div>
+                    <div>
                         <label htmlFor="brand_id" className={labelClass}>Thương hiệu</label>
                         <select
                             id="brand_id"
                             name="brand_id"
                             className={inputClass}
-                            defaultValue=""
+                            value={form.brand_id}
+                            onChange={handleForm}
                         >
                             <option value="">Chọn thương hiệu (Tùy chọn)</option>
                             {brands.map(brand => (
                                 <option key={brand.id} value={brand.id}>{brand.name}</option>
                             ))}
                         </select>
-                    </div>  */}
+                    </div> 
 
                     <div className="md:col-span-2">
                         <label htmlFor="description" className={labelClass}>Mô tả</label>

@@ -59,13 +59,20 @@ export function getProductByCategorySlug(slug){
     return axiosClient.get(`/productsByCategorySlug/${slug}`);
 }
 export function createProduct(data){
+    if (data instanceof FormData) {
+        return axiosClient.post("/products", data, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+    }
     return axiosClient.post("/products", data);
 }
 
 export async function updateProduct(id, data){
     if (data instanceof FormData) {
         data.append("_method", "PUT");
-        return axiosClient.post(`/products/${id}`, data);
+        return axiosClient.post(`/products/${id}`, data, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
     }
     return axiosClient.put(`/products/${id}`, data);
 }
@@ -74,6 +81,14 @@ export function deleteProduct(id){
     return axiosClient.delete(`/products/${id}`);
 }
 
+export const restoreProduct = (id) => {
+    return axiosClient.patch(`/products/${id}/restore`);
+};
+
+export const forceDeleteProduct = (id) => {
+    return axiosClient.delete(`/products/${id}/force`);
+};
+
 const productServices = {
     getAll: getProducts,
     getByPageSize: getProductsByPageSize,
@@ -81,6 +96,8 @@ const productServices = {
     create: createProduct,
     update: updateProduct,
     delete: deleteProduct,
+    restore: restoreProduct,
+    destroy:forceDeleteProduct,
 };
 
 export default productServices;

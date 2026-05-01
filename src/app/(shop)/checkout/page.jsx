@@ -8,7 +8,7 @@ import formatPrice from "@/utils/formatPrice";
 import Image from "next/image";
 import { clearCart } from "@/lib/features/cart/cartSlice";
 import { storeOrder } from "@/services/orderServices";
-const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
+import getImageSrc from "@/utils/getImageSrc";
 
 export default function Page() {
   const { items, totalQty, totalAmount } = useSelector((state) => state.cart);
@@ -116,7 +116,7 @@ export default function Page() {
             <div key={item.id} className="flex justify-between items-center border-b border-gray-100 pb-4 last:border-0 last:pb-0">
               <div className="flex items-center gap-4">
                 <div className="relative w-16 h-16 bg-gray-50 border border-gray-100 rounded flex items-center justify-center overflow-hidden">
-                  <Image unoptimized fill src={item.image ? `${STORAGE_URL}${item.image}` : "/no-image.png"} alt={item.product_name} className="object-contain" />
+                  <Image unoptimized fill src={getImageSrc(item.image)} alt={item.product_name} className="object-contain" />
                 </div>
                 <div>
                   <p className="font-medium line-clamp-1">{item.product_name}</p>

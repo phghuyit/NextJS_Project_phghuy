@@ -1,18 +1,18 @@
 import Image from "next/image";
 import  formatPrice  from '@/utils/formatPrice';
-import { product } from "@/data/product";
+import getImageSrc from "@/utils/getImageSrc";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 export default function CartItem({ item, onUpdateQuantity, onRemove }) {
-const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
 const { id, product_name, image, price,sale_price, qty = 1,is_on_sale=0 } = item;
 const currentPrice = is_on_sale == 1 ? sale_price : price;
-console.log(item)
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border-b border-gray-200 bg-white rounded-lg shadow-sm mb-4 gap-4">
           
             <div className="flex items-center gap-4 w-full sm:w-auto">
                 <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
                     <Image
-                        src={image?`${STORAGE_URL}${image}`:"/no-image/jpg"}
+                        src={getImageSrc(image)}
                         alt={product_name}
                         className="w-full h-full object-cover"
                         fill
@@ -54,10 +54,9 @@ console.log(item)
 
                 <button
                     onClick={() => onRemove(id)}
-                    className="text-red-500 hover:text-red-700 transition-colors p-2 bg-red-50 hover:bg-red-100 rounded-full"
-                    aria-label="Remove item"
+                    className="text-red-500 hover:text-red-700 transition-colors p-2 bg-red-50 hover:bg-red-100 rounded-full cursor-pointer"
                 >
-                    xoa
+                    <FontAwesomeIcon icon={faTrash} />
                 </button>
             </div>
         </div>

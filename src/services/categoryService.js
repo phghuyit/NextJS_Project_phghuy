@@ -19,7 +19,7 @@ const categoryServices = {
     async updateCat(id, data){
         if (data instanceof FormData) {
             data.append('_method', 'PUT');
-            return axiosClient.post(`/categories/${id}`, data);
+            return axiosClient.put(`/categories/${id}`, data);
         }
         return axiosClient.put(`/categories/${id}`, data);
     },

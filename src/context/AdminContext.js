@@ -22,7 +22,7 @@ export function AdminAuthProvider({children}){
     },[])
     
     function loginAdmin(user,token){
-        Cookies.set('adminUser', user);
+        Cookies.set('adminUser', JSON.stringify(user));
         Cookies.set('adminToken',token,{
             expires:7,
             secure:true,

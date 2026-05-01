@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from "react";
 import userServices from "@/services/userServices";
-import AdminTable from "@/components/admin/table/AdminTable";
 import Pagination from "@/components/common/Pagination";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import getImageSrc from "@/utils/getImageSrc";
 
 export default function Page() {
   const [users, setUsers] = useState([]);
@@ -15,15 +18,6 @@ export default function Page() {
   const [pagination, setPagination] = useState(true);
   const router = useRouter();
   const PAGES_SIZE = 5;
-
-  const col = [
-    { key: "id", label: "ID" },
-    { key: "name", label: "Họ tên" },
-    { key: "username", label: "Tên đăng nhập" },
-    { key: "email", label: "Email" },
-    { key: "phone", label: "Số điện thoại" },
-    { key: "role", label: "Vai trò" },
-  ];
 
   useEffect(() => {
     async function fetchUsers() {
@@ -53,23 +47,6 @@ export default function Page() {
     router.push(`/admin/users/${row.id}`);
   }
 
-  function handleEdit(row) {
-    router.push(`/admin/users/${row.id}/edit`);
-  }
-
-  async function handleDel(rowid) {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa người dùng?")) return;
-
-    try {
-      await userServices.delete(rowid);
-      alert("Xóa người dùng thành công!");
-      setUsers((prev) => prev.filter((item) => item.id !== rowid));
-    } catch (error) {
-      console.error(error);
-      alert("Lỗi xóa người dùng trên Backend API!");
-    }
-  }
-
   if (error) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
@@ -94,17 +71,62 @@ export default function Page() {
         <span className="text-gray-800">Quản lý người dùng</span>
       </nav>
 
-      <div className="m-6 flex items-center justify-between">
-        <h1 className="text-4xl font-bold uppercase">Trang quản lý người dùng</h1>
-        <Link href="/admin/users/create" className="rounded-md bg-gray-300 px-4 py-2 font-bold text-gray-800 transition-colors hover:bg-gray-400">
-          Tạo người dùng mới
-        </Link>
-      </div>
-
-      <div className="flex justify-center flex-col">
-        <AdminTable columns={col} data={users} onDetail={handleDetail} onEdit={handleEdit} onDel={handleDel} />
+      <h1 className="text-4xl font-bold uppercase my-6">Trang quản lý người dùng</h1>
+      <div className="flex flex-col justify-center mb-6">
+        <div className="bg-white shadow rounded-lg overflow-hidden border border-gray-200 mx-6">
+          <table className="w-full">
+            <thead className="bg-gray-100 border-b">
+              <tr>
+                <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">ID</th>
+                <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Avatar</th>
+                <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Họ Tên</th>
+                <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Tên Đăng Nhập</th>
+                <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Email</th>
+                <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Số Điện Thoại</th>
+                <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Vai Trò</th>
+                <th className="py-3 px-4 text-center font-semibold text-gray-600 uppercase">Hành Động</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((row) => (
+                <tr key={row.id} className="border-b text-gray-700 transition duration-200 hover:bg-orange-50">
+                  <td className="py-3 px-4 text-gray-800">{row.id}</td>
+                  <td className="py-3 px-4 text-gray-800">
+                    <div className="relative w-12 h-12 overflow-hidden rounded-full border border-gray-200 bg-gray-50">
+                      <Image 
+                        src={getImageSrc(row.image)} 
+                        alt={row.name || "Avatar"} 
+                        fill 
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  </td>
+                  <td className="py-3 px-4 text-gray-800">{row.name}</td>
+                  <td className="py-3 px-4 text-gray-800">{row.username}</td>
+                  <td className="py-3 px-4 text-gray-800">{row.email}</td>
+                  <td className="py-3 px-4 text-gray-800">{row.phone}</td>
+                  <td className="py-3 px-4 text-gray-800">{row.role}</td>
+                  <td className="py-3 px-4">
+                    <div className="flex justify-center gap-3">
+                      <button
+                        onClick={() => handleDetail(row)}
+                        className="rounded-lg border border-gray-200 px-3 py-2 transition-colors duration-300 hover:border-blue-300 hover:bg-blue-50 cursor-pointer"
+                        title="Xem chi tiết đơn hàng"
+                      >
+                        <FontAwesomeIcon icon={faEye} className="w-5 h-5 text-blue-500" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         {!loading && pagination && pagination.pageCount > 1 && (
-          <Pagination currentPage={pagination.page} pageCount={pagination.pageCount} onPageChange={handlePageChange} />
+          <div className="mt-6 flex justify-center">
+            <Pagination currentPage={pagination.page} pageCount={pagination.pageCount} onPageChange={handlePageChange} />
+          </div>
         )}
       </div>
     </>

@@ -48,10 +48,6 @@ export default function Page() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleDetail(row) {
-    router.push(`/admin/brands/${row.id}`);
-  }
-
   function handleEdit(row) {
     router.push(`/admin/brands/${row.id}/edit`);
   }
@@ -64,7 +60,7 @@ export default function Page() {
       setBrands((prev) => prev.filter((item) => item.id !== rowid));
     } catch (error) {
       console.error(error);
-      alert("Lỗi xóa thương hiệu trên Backend API!");
+      alert(error.message);
     }
   }
 
@@ -72,24 +68,24 @@ export default function Page() {
   if (loading) return <div className="flex h-full items-center justify-center"><h1 className="text-center text-2xl font-bold">Loading Danh Sách Thương Hiệu...</h1></div>;
 
   return (
-    <>
+    <div className="mb-12">
       <nav className="mx-6 mt-6 mb-2 flex items-center space-x-2 text-sm font-medium text-gray-500">
         <Link href="/admin" className="transition-colors hover:text-blue-600">Trang chủ</Link>
         <span>/</span>
-        <span className="text-gray-800">Quản lý thương hiệu</span>
+        <span className="text-gray-800">Quản lý tác giả</span>
       </nav>
 
       <div className="m-6 flex items-center justify-between">
-        <h1 className="text-4xl font-bold uppercase">Trang quản lý thương hiệu</h1>
-        <Link href="/admin/brands/create" className="rounded-md bg-gray-300 px-4 py-2 font-bold text-gray-800 transition-colors hover:bg-gray-400">Tạo thương hiệu mới</Link>
+        <h1 className="text-4xl font-bold uppercase">Trang quản lý tác giả</h1>
+        <Link href="/admin/brands/create" className="rounded-md bg-gray-300 px-4 py-2 font-bold text-gray-800 transition-colors hover:bg-gray-400">Thêm tác giả mới</Link>
       </div>
 
       <div className="flex justify-center flex-col">
-        <AdminTable columns={col} data={brands} onDetail={handleDetail} onEdit={handleEdit} onDel={handleDel} />
+        <AdminTable columns={col} data={brands} onEdit={handleEdit} onDel={handleDel} />
         {!loading && pagination && pagination.pageCount > 1 && (
           <Pagination currentPage={pagination.page} pageCount={pagination.pageCount} onPageChange={handlePageChange} />
         )}
       </div>
-    </>
+    </div>
   );
 }

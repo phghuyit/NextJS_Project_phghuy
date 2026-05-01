@@ -5,7 +5,6 @@ import { loginAdmin as loginAdminService } from '@/services/authServices';
 import { useAdminAuth } from '@/context/AdminContext';
 export default function Page() {
     const router = useRouter();
-    const [mounted,setMounted]=useState(false);
     const [loading, setLoad] = useState(false);
     const [err, setErr] = useState([]);
     const { loginAdmin } = useAdminAuth();

@@ -2,6 +2,7 @@
 
 import {getProductById,updateProduct} from "@/services/productServices";
 import categoryServices from "@/services/categoryService";
+import {getBrandAll} from "@/services/brandServices";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,7 +15,7 @@ export default function Page() {
     product_name: "",
     slug: "",
     cat_id: 0,
-    // brand_id: 0,
+    brand_id: 0,
     price: 0,
     qty: 0,
     is_on_sale: 0,
@@ -27,6 +28,7 @@ export default function Page() {
   const [load, setLoad] = useState(true);
   const [err, setErr] = useState(null);
   const [cats, setCat] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -37,7 +39,7 @@ export default function Page() {
           product_name: productData.product_name ,
           slug: productData.slug,
           cat_id: productData.cat_id || 0,
-          // brand_id: productData.brand_id || 0,
+          brand_id: productData.brand_id || 0,
           price: productData.price || 0,
           qty: productData.qty || 0,
           is_on_sale: productData.is_on_sale !== undefined ? productData.is_on_sale : 1, 
@@ -62,9 +64,21 @@ export default function Page() {
       }
     }
 
+    async function fetchBrands() {
+      try {
+        const res = await getBrandAll();
+        if (res) {
+          setBrands(res.brands || res.data || []);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     if (id) {
       fetchProduct();
       fetchCats();
+      fetchBrands();
     }
   }, [id]);
 
@@ -82,7 +96,7 @@ export default function Page() {
       formData.append("product_name", product.product_name);
       formData.append("slug", product.slug);
       formData.append("cat_id", product.cat_id);
-      // formData.append("brand_id", product.brand_id);
+      formData.append("brand_id", product.brand_id);
       formData.append("price", product.price);
       formData.append("qty", product.qty);
       formData.append("is_on_sale", product.is_on_sale); 
@@ -136,10 +150,15 @@ export default function Page() {
                 ))}
               </select>
             </div>
-            {/* <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Thương Hiệu</label>
-              <input type="number" name="brand_id" value={product.brand_id} onChange={handleChange} className={labelClass} />
-            </div> */}
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Tác giả</label>
+              <select name="brand_id" value={product.brand_id} onChange={handleChange} className={labelClass}>
+                <option value="0" disabled>Chọn tác giả</option>
+                {brands.map(brand => (
+                  <option key={brand.id} value={brand.id} selected={product.brand_id==brand.id}>{brand.name}</option>
+                ))}
+              </select>
+            </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">Giá</label>
               <input type="number" name="price" value={product.price} onChange={handleChange} className={labelClass} />

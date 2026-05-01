@@ -7,8 +7,7 @@ import formatPrice from "@/utils/formatPrice";
 import Image from "next/image";
 import Link from "next/link";
 import categoryServices from "@/services/categoryService";
-
-const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
+import getImageSrc from "@/utils/getImageSrc";
 
 export default function OrderDetailPage() {
   const { id } = useParams();
@@ -112,7 +111,7 @@ export default function OrderDetailPage() {
                       <Image 
                         unoptimized 
                         fill 
-                        src={`${STORAGE_URL}${item.product.image}`} 
+                        src={getImageSrc(item.product.image)} 
                         alt={item.product.product_name || "Product"} 
                         className="object-contain p-1" 
                       />

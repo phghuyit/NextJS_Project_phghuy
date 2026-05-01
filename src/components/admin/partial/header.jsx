@@ -1,16 +1,18 @@
 "use client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faUser, faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faUser, faArrowRightFromBracket, faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
 import { useAdminAuth } from "@/context/AdminContext";
 import Link from "next/link";
 
 export default function Header() {
     const {admin,logoutAdmin}=useAdminAuth();
+    // console.log(admin);
+
   return (
     <header className="text-white">
         <div className="bg-[#131921] flex items-center justify-between p-4 gap-4">
             <div className="text-3xl font-bold tracking-wide">
-                <a href="#">amaz<span className="text-orange-400">in</span></a>
+                <a href="/admin">amaz<span className="text-orange-400">in</span></a>
             </div>
             <div className="hidden md:flex items-center gap-6">
                     <div className="hover:underline cursor-pointer">
@@ -36,7 +38,7 @@ export default function Header() {
                             </div>
                         ):(
                             <Link href="/admin/login">
-                                <FontAwesomeIcon icon={faUser} className="text-orange-500 w-5 h-5"/>
+                                <FontAwesomeIcon icon={faArrowRightToBracket} className="text-orange-500 w-5 h-5"/>Đăng Nhập
                             </Link>
                         )
                     }

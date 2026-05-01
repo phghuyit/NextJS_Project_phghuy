@@ -1,14 +1,13 @@
 "use client"
   
 import Pagination from "@/components/common/Pagination";
-import ProductDetail from "@/components/shop/product/ProductDetail";
 import ProductList from "@/components/shop/product/ProductList";
-import { getProductsByPageSize, getProductByCategoryId, getProductByBrandId } from "@/services/productServices";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getProductsByPageSize } from "@/services/productServices";
 import { useState,useEffect } from "react";
 import categoryServices from "@/services/categoryService";
 import { getBrandAll } from "@/services/brandServices";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 export default function Page() {
   const [products,setProds]= useState([]);
@@ -18,18 +17,28 @@ export default function Page() {
   const [pagination,setPagination]=useState(true);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState('');
 
   const PAGES_SIZE =8;
   useEffect(()=>{
     async function fetchProd(){
-      if (selectedFilter !== 'all') return;
       try{
           setLoading(true);
-          const api =await getProductsByPageSize({
+          const params = {
             'pagination[page]':page,
             'pagination[pageSize]':PAGES_SIZE
-          });
+          };
+
+          if (selectedCategory) {
+            params['filters[cat_id][$eq]'] = selectedCategory;
+          }
+
+          if (selectedBrand) {
+            params['filters[brand_id][$eq]'] = selectedBrand;
+          }
+
+          const api =await getProductsByPageSize(params);
           setProds(api.data) ;
           setPagination(api.pagination);
       }catch(err){
@@ -40,7 +49,7 @@ export default function Page() {
       }
     }
     fetchProd();
-  },[page, selectedFilter]);
+  },[page, selectedCategory, selectedBrand]);
 
   useEffect(() => {
     async function fetchFilters() {
@@ -57,32 +66,18 @@ export default function Page() {
     fetchFilters();
   }, []);
 
-  async function handleFilterChange(e) {
-    const value = e.target.value;
-    setSelectedFilter(value);
-    const [type, id] = value.split('-');
+  function handleFilterChange(e) {
+    const { name, value } = e.target;
 
-    if (type === 'all') {
-      setPage(1);
-      return; // The useEffect hook will automatically fetch the normal paginated list
+    if (name === 'filterCat') {
+      setSelectedCategory(value);
     }
 
-    try {
-      setLoading(true);
-      if (type === 'cate') {
-        const res = await getProductByCategoryId(id);
-        setProds(res?.data || res || []);
-        setPagination(null); 
-      } else if (type === 'brand') {
-        const res = await getProductByBrandId(id);
-        setProds(res?.data || res || []);
-        setPagination(null);
-      }
-    } catch (err) {
-      console.error("Failed to filter products:", err);
-    } finally {
-      setLoading(false);
+    if (name === 'filterBrand') {
+      setSelectedBrand(value);
     }
+
+    setPage(1);
   }
 
   function handlePageChange(newPage){
@@ -113,7 +108,7 @@ export default function Page() {
                     <ul className="space-y-3 max-h-48 overflow-y-auto pr-2">
                       <li>
                         <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors">
-                          <input type="radio" name="filter" value="all" onChange={handleFilterChange} checked={selectedFilter === 'all'} className="accent-orange-500 w-4 h-4 cursor-pointer" />
+                          <input type="radio" name="filterCat" value="" onChange={handleFilterChange} checked={selectedCategory === ''} className="accent-orange-500 w-4 h-4 cursor-pointer" />
                           Tất cả
                         </label>
                       </li>
@@ -121,7 +116,7 @@ export default function Page() {
                       {categories.map(cat => (
                         <li key={`cat-${cat.id}`}>
                           <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors">
-                            <input type="radio" name="filter" value={`cate-${cat.id}`} onChange={handleFilterChange} checked={selectedFilter === `cate-${cat.id}`} className="accent-orange-500 w-4 h-4 cursor-pointer" />
+                            <input type="radio" name="filterCat" value={cat.id} onChange={handleFilterChange} checked={selectedCategory === String(cat.id)} className="accent-orange-500 w-4 h-4 cursor-pointer" />
                             {cat.category_name || cat.name}
                           </label>
                         </li>
@@ -131,10 +126,16 @@ export default function Page() {
                   <div>
                     <h3 className="font-bold text-gray-800 mb-3 border-b pb-2 mt-4">Tác giả</h3>
                     <ul className="space-y-3 max-h-48 overflow-y-auto pr-2">
+                      <li>
+                        <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors">
+                          <input type="radio" name="filterBrand" value="" onChange={handleFilterChange} checked={selectedBrand === ''} className="accent-orange-500 w-4 h-4 cursor-pointer" />
+                          Tất cả
+                        </label>
+                      </li>
                       {brands.map(b => (
                         <li key={`brand-${b.id}`}>
                           <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700 hover:text-orange-500 transition-colors">
-                            <input type="radio" name="filter" value={`brand-${b.id}`} onChange={handleFilterChange} checked={selectedFilter === `brand-${b.id}`} className="accent-orange-500 w-4 h-4 cursor-pointer" />
+                            <input type="radio" name="filterBrand" value={b.id} onChange={handleFilterChange} checked={selectedBrand === String(b.id)} className="accent-orange-500 w-4 h-4 cursor-pointer" />
                             {b.name}
                           </label>
                         </li>

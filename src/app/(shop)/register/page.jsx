@@ -36,8 +36,16 @@ export default function RegisterPage() {
     try{
       const formData = new FormData();
       Object.entries(form).forEach(([key,value])=>{
-        if(value!=null&&value!="")
-          formData.append(key,value);
+        if (value == null || value === "") return;
+
+        if (key === "image") {
+          const file = value?.originFileObj || value;
+          if (file instanceof File || file instanceof Blob) {
+              formData.append("image", file);
+          }
+          return;
+        }
+        formData.append(key, value);
       })
       await register(formData);
       if(confirm("Đăng ký tài khoản thành công có muốn chuyển về trang đăng nhập?"))

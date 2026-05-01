@@ -19,7 +19,7 @@ export default function Page() {
           setProds(res?.data || res || []);
           console.log(res)
       } catch(err) {
-         console.error("Failed to fetch searched products:", err);
+         console.error("Failed to fetch searched products:", err.message);
          setError("Không thể tải kết quả tìm kiếm.");
       } finally {
         setLoading(false);

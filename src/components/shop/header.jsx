@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { getMenuByPosition } from "@/services/menuServices";
 import standardized from "@/utils/standardized";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import getImageSrc from "@/utils/getImageSrc";
 
 export default function Header() {
     const {user,logoutUser}=useAuth();
@@ -17,9 +19,9 @@ export default function Header() {
     useEffect(() => {
         async function fetchMenu() {
             try {
-                const res = await getMenuByPosition("mainmenu");
+                const res = await getMenuByPosition();
                 setMenu(res?.data || res || []);
-                // console.log(res);
+                console.log(res);
             } catch (error) {
                 console.error("Failed to fetch menu:", error);
             }
@@ -67,9 +69,25 @@ export default function Header() {
                         <div className="flex">
                             <Link href="/account" className="hover:text-orange-400 hover:border-orange-400 hover:bg-[#20293a]
                             transition-colors duration-250 cursor-pointer border-transparent py-2 pl-3 rounded-lg bg-transparent ">
-                                <span className="text-sm font-medium mr-3 ">
-                                    <FontAwesomeIcon icon={faUser} className="w-4 h-4 mr-1"/>{user.name}
-                                </span>
+                                {
+                                    user.image?(
+                                    <span className="inline-flex items-center text-sm font-medium mr-3 ">
+                                        <Image
+                                            unoptimized
+                                            src={getImageSrc(user.image)}
+                                            className="mr-1  object-cover rounded-full "
+                                            width={20}
+                                            height={20}
+                                            alt="Avatar.jpg"
+                                        />
+                                        {user.name}
+                                    </span>
+                                ):(
+                                    <span className="text-sm font-medium mr-3 ">
+                                        <FontAwesomeIcon icon={faUser} className="w-4 h-4 mr-1"/>{user.name}
+                                    </span>
+                                )
+                                }
                             </Link>
                             <button onClick={logoutUser} className="
                             hover:text-red-400 hover:border-red-400 hover:bg-[#20293a]

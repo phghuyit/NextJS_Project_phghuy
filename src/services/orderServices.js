@@ -18,4 +18,9 @@ export function getBriefOrder(orderId){
 export const storeOrder = async (data) => {
     return axiosClient.post("/saveOrder",data);
 };
+
+export const updateStatusOrder = async (id,data) => {
+    return axiosClient.patch(`/updateStatusOrder/${id}`,data);
+};
+
 export default orderServices;
