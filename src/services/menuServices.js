@@ -19,11 +19,19 @@ export function storeMenu(data) {
 export function updateMenu(id, data) {
     return axiosClient.put(`/menus/${id}`, data);
 }
-export function softDeleteMenu(id) {
-    return axiosClient.delete(`/softDeleteMenu/${id}`);
+export async function getTrashedMenusByPageSize(params = {}) {
+    const res = await axiosClient.get("/trashedMenusByPageSize", { params });
+    return res;
+}
+export function restoreMenu(id) {
+    return axiosClient.patch(`/menus/${id}/restore`);
 }
 export function forceDeleteMenu(id) {
     return axiosClient.delete(`/forceDeleteMenu/${id}`);
+}
+
+export function softDeleteMenu(id) {
+    return axiosClient.delete(`/softDeleteMenu/${id}`);
 }
 
 const menuService = {
@@ -35,6 +43,9 @@ const menuService = {
     updateMenu,
     softDeleteMenu,
     forceDeleteMenu,
+    getTrashedByPageSize: getTrashedMenusByPageSize,
+    restore: restoreMenu,
+    destroy: forceDeleteMenu,
     getByPageSize: getMenusByPageSize,
     getById: getMenuById,
     create: storeMenu,
@@ -42,32 +53,12 @@ const menuService = {
     delete: softDeleteMenu
 };
 
-<<<<<<< HEAD
 export function getByPageSize(params = {}){
   return axiosClient.get(`/menusByPageSize/`,{params});
 };
 
-export function getMenuById(id){
-    return axiosClient.get(`/menus/${id}`);
-}
-
 export function getMenuAll(){
     return axiosClient.get(`/menus/`);
-} 33  
+} 
 
-export function storeMenu(data) {
-    return axiosClient.post("/menus", data);
-}
-
-export function softDeleteMenu(id) {
-    return axiosClient.delete(`/menus/${id}`);
-}
-
-export async function updateMenu(id, data) {
-    return axiosClient.put(`/menus/${id}`, data);
-}
-
-export default menuServices;
-=======
 export default menuService;
->>>>>>> a296bc6d69093b06f95be3b4f1a1f590c2792f99

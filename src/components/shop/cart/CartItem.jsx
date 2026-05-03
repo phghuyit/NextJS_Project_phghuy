@@ -1,10 +1,6 @@
 import Image from "next/image";
 import  formatPrice  from '@/utils/formatPrice';
-<<<<<<< HEAD
 import getImageSrc from "@/utils/getImageSrc";
-=======
-import { product } from "@/data/product";
->>>>>>> a296bc6d69093b06f95be3b4f1a1f590c2792f99
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 export default function CartItem({ item, onUpdateQuantity, onRemove }) {
@@ -60,11 +56,7 @@ const currentPrice = is_on_sale == 1 ? sale_price : price;
                     onClick={() => onRemove(id)}
                     className="text-red-500 hover:text-red-700 transition-colors p-2 bg-red-50 hover:bg-red-100 rounded-full cursor-pointer"
                 >
-<<<<<<< HEAD
                     <FontAwesomeIcon icon={faTrash} />
-=======
-                   <FontAwesomeIcon icon={faTrash} />
->>>>>>> a296bc6d69093b06f95be3b4f1a1f590c2792f99
                 </button>
             </div>
         </div>

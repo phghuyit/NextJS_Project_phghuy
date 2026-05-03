@@ -1,5 +1,5 @@
 "use client"
-  
+
 import ProductList from "@/components/shop/product/ProductList";
 import { getHotProducts } from "@/services/productServices";
 import { useState, useEffect } from "react";
@@ -12,20 +12,20 @@ export default function Page() {
   useEffect(() => {
     async function fetchProd() {
       try {
-          setLoading(true);
-          // Fetching limit 12 hot products
-          const res = await getHotProducts(12);
-          setProds(res);
-      } catch(err) {
-         console.error("Failed to fetch hot products:", err);
-         setError("Không thể tải sản phẩm.");
+        setLoading(true);
+        // Fetching limit 12 hot products
+        const res = await getHotProducts(12);
+        setProds(res);
+      } catch (err) {
+        console.error("Failed to fetch hot products:", err);
+        setError("Không thể tải sản phẩm.");
       } finally {
         setLoading(false);
       }
     }
     fetchProd();
   }, []);
-  
+
   if (error) {
     return (<h1>{error}</h1>);
   }
@@ -38,7 +38,7 @@ export default function Page() {
         Sản Phẩm Bán Chạy Nhất
       </h1>
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 m-12">
-        <ProductList products={products}/>
+        <ProductList products={products} />
       </div>
     </div>
   );

@@ -77,7 +77,14 @@ export default function Page() {
 
       <div className="m-6 flex items-center justify-between">
         <h1 className="text-4xl font-bold uppercase">Trang quản lý tác giả</h1>
-        <Link href="/admin/brands/create" className="rounded-md bg-gray-300 px-4 py-2 font-bold text-gray-800 transition-colors hover:bg-gray-400">Thêm tác giả mới</Link>
+        <div className="flex gap-4">
+          <Link href="/admin/brands/create" className="rounded-md bg-blue-500 px-4 py-2 font-bold text-white transition-colors hover:bg-blue-600 shadow-sm">
+            Tạo tác giả mới
+          </Link>
+          <Link href="/admin/brands/trash" className="rounded-md bg-red-500 px-4 py-2 font-bold text-white transition-colors hover:bg-red-600 shadow-sm">
+            Thùng rác
+          </Link>
+        </div>
       </div>
 
       <div className="flex justify-center flex-col">

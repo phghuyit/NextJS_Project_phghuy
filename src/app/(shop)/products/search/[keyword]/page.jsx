@@ -1,5 +1,5 @@
 "use client"
-  
+
 import ProductList from "@/components/shop/product/ProductList";
 import { searchProduct } from "@/services/productServices";
 import { useParams } from "next/navigation";
@@ -14,26 +14,26 @@ export default function Page() {
   useEffect(() => {
     async function fetchProd() {
       try {
-          setLoading(true);
-          const res = await searchProduct(keyword);
-          setProds(res?.data || res || []);
-          console.log(res)
-      } catch(err) {
-         console.error("Failed to fetch searched products:", err.message);
-         setError("Không thể tải kết quả tìm kiếm.");
+        setLoading(true);
+        const res = await searchProduct(keyword);
+        setProds(res?.data || res || []);
+        console.log(res)
+      } catch (err) {
+        console.error("Failed to fetch searched products:", err.message);
+        setError("Không thể tải kết quả tìm kiếm.");
       } finally {
         setLoading(false);
       }
     }
     if (keyword) {
-        fetchProd();
+      fetchProd();
     }
   }, [keyword]);
-  
+
   if (error) {
     return (<h1 className="text-center text-red-500 mt-10">{error}</h1>);
   }
-  
+
   if (loading) {
     return (
       <div className="w-[90%] mt-6 animate-pulse">
@@ -54,7 +54,7 @@ export default function Page() {
       </h1>
       {products && products.length > 0 ? (
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 m-12">
-          <ProductList products={products}/>
+          <ProductList products={products} />
         </div>
       ) : (
         <div className="m-12 text-center text-lg text-gray-500 font-medium py-16 bg-gray-50 rounded-lg border border-dashed border-gray-300">

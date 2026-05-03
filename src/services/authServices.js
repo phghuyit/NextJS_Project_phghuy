@@ -21,6 +21,10 @@ export function getMe() {
 }
 
 export function updateMe(data) {
+    if (data instanceof FormData) {
+        data.append("_method", "PUT");
+        return axiosClient.post("/auth/me", data);
+    }
     return axiosClient.put("/auth/me", data);
 }
 

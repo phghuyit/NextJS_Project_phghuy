@@ -1,47 +1,4 @@
-<<<<<<< HEAD
-import axiosClient from "../lib/axiosClient.js";
-const categoryServices = {
-    getAll(){
-        return axiosClient.get("/categories");
-    },
-    async getCateByPageSize(params={}){
-        const res = await axiosClient.get("/categoriesByPageSize",{params});
-        return res;
-    },
-    getCatById(id){
-        return axiosClient.get(`/showById/${id}`);
-    },
-    getCatBySlug(slug){
-        return axiosClient.get(`/showBySlug/${slug}`);
-    },
-    createCategory(data){
-        return axiosClient.post("/categories",data);
-    },
-    async updateCat(id, data){
-        if (data instanceof FormData) {
-            data.append('_method', 'PUT');
-            return axiosClient.put(`/categories/${id}`, data);
-        }
-        return axiosClient.put(`/categories/${id}`, data);
-    },
-    deleteCategory(id){
-        return axiosClient.delete(`/categories/${id}`)
-    },
-    
-    async getTrashedCategories(params={}){
-        const res = await axiosClient.get("/trashedCategoriesByPageSize", {params});
-        return res?.data || res;
-    },
-    restoreCategory(id){
-        return axiosClient.patch(`/categories/${id}/restore`);
-    },
-    forceDeleteCategory(id){
-        return axiosClient.delete(`/categories/${id}/force`);
-    }
-};
-=======
 import axiosClient from "@/lib/axiosClient";
->>>>>>> a296bc6d69093b06f95be3b4f1a1f590c2792f99
 
 export function getCategories() {
     return axiosClient.get("/categories");

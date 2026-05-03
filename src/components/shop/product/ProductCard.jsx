@@ -1,37 +1,23 @@
 import formatPrice from "@/utils/formatPrice";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { getBrandNameByID } from "@/services/brandServices.js";
-import getImageSrc from "@/utils/getImageSrc";
+const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
+
 
 export default function ProductCard({product}){
-    const [brand,setBrand] = useState();
-    async function fetchBrand(){
-        try{
-            let res = await getBrandNameByID(product.brand_id);
-            setBrand(res.data ? res.data.name : res.name);
-           
-        }catch(error){
-            console.error("Loi tai du lieu tac gia: "+error);
-        }
-    };
-    useEffect(()=>{
-        fetchBrand();
-    },[]);
-
     const discountPercentage = product.price > 0 ? Math.round(((product.price - product.sale_price) / product.price) * 100) : 0;
     return (
         <Link href={`/products/${product.slug}`} className="block h-full">
             <div className="border border-transparent duration-200 flex flex-col h-full outline-none p-6 rounded-[5px] shadow text-lg transition hover:border-orange-400 hover:ring-2 hover:ring-orange-100"
         >
                 <div className="relative h-64 w-full self-center">
-                    <Image src={getImageSrc(product.image)} alt={product.product_name} className="max-h-full object-contain" fill unoptimized/>
+                    <Image src={product.image ? `${STORAGE_URL}${product.image}` : "/no-image.png"} alt={product.product_name} className="max-h-full object-contain" fill unoptimized/>
                 </div>
+
 
                 <div className="my-4 grow flex flex-col">
                     <p className="font-bold text-xl leading-tight">{product.product_name}</p>
-                    <p className="text-sm text-gray-500 mt-1 mb-2">{brand}</p>
+                    <p className="text-sm text-gray-500 mt-1 mb-2">{product.brand.name}</p>
                     <div className="mt-auto">
                         {(product.is_on_sale ==1)?(
                             <>
@@ -55,3 +41,4 @@ export default function ProductCard({product}){
         </Link>
     );
 }
+

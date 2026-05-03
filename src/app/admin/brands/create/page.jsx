@@ -68,7 +68,7 @@ export default function CreateBrandPage() {
             }
         } catch (error) {
             console.error("Lỗi: " + error.message);
-            setErr("Lỗi trong quá trình tạo tác giả. Vui lòng thử lại.");
+            setErr("Lỗi trong quá trình tạo tác giả: " + error.message);
             setLoad(false);
         }
     }

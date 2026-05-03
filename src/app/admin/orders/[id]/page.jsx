@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import {getByOrderId, getBriefOrder, updateStatusOrder} from "@/services/orderServices";
+import {getOrderItemById, getBriefOrder, updateOrderStatus} from "@/services/orderServices";
 import formatPrice from "@/utils/formatPrice";
 import { getById } from "@/services/userServices";
 
@@ -19,7 +19,7 @@ export default function Page() {
   useEffect(() => {
     async function fetchOrderData() {
       try {
-        const itemsRes = await getByOrderId(id);
+        const itemsRes = await getOrderItemById(id);
         setOrderItems(itemsRes?.data || itemsRes || []);
         console.log(itemsRes)
         const briefRes = await getBriefOrder(id);
@@ -45,7 +45,7 @@ export default function Page() {
   const handleUpdateStatus = async (e) => {
     e.preventDefault();
     try {
-      await updateStatusOrder(id, { status });
+      await updateOrderStatus(id, { status });
       setOrderBrief((prev) => ({ ...prev, status }));
       setEdit(false);
       alert("Cập nhật trạng thái thành công!");
@@ -159,7 +159,6 @@ export default function Page() {
           )}
         </div>
 
-        {/* Cột phải: Thông tin khách hàng */}
         <div className="bg-white shadow rounded-lg p-6 border border-gray-200 lg:col-span-2">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Thông Tin Khách Hàng</h2>
           {orderBrief ? (
@@ -176,7 +175,6 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Bảng chi tiết sản phẩm */}
       <div className="bg-white shadow rounded-lg overflow-hidden border border-gray-200">
         <h2 className="text-lg font-semibold text-gray-800 p-6 border-b bg-gray-50">Danh Sách Sản Phẩm</h2>
         {orderItems.length === 0 ? (

@@ -15,8 +15,8 @@ export default function RegisterPage() {
     password:'',
     password_confirmation:'',
     gender:'',
-    daybirth:'',
-    avatar:'',
+    birthday:'',
+    image: null,
     address: '',
     phone: '',
   })
@@ -36,15 +36,7 @@ export default function RegisterPage() {
     try{
       const formData = new FormData();
       Object.entries(form).forEach(([key,value])=>{
-        if (value == null || value === "") return;
-
-        if (key === "image") {
-          const file = value?.originFileObj || value;
-          if (file instanceof File || file instanceof Blob) {
-              formData.append("image", file);
-          }
-          return;
-        }
+        if (value === null || value === "") return;
         formData.append(key, value);
       })
       await register(formData);
@@ -131,14 +123,14 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="daybirth" className="font-bold text-base text-[#111]">Ngày sinh</label>
-                  <input type="date" id="daybirth" name="daybirth" value={form.daybirth} onChange={handleForm}
+                  <label htmlFor="birthday" className="font-bold text-base text-[#111]">Ngày sinh</label>
+                  <input type="date" id="birthday" name="birthday" value={form.birthday} onChange={handleForm}
                       className="border border-[#a6a6a6] focus:ring-orange-200 focus:ring-2 focus:border-orange-100 outline-none py-1.5 h-10 px-3 rounded-[3px] w-full text-base duration-300 mt-1 transition-all"/>
                 </div>
 
                 <div>
-                    <label htmlFor="avatar" className="font-bold text-base text-[#111]">Ảnh đại diện</label>
-                    <input type="file" id="avatar" name="avatar" accept="image/*" onChange={handleForm}
+                    <label htmlFor="image" className="font-bold text-base text-[#111]">Ảnh đại diện</label>
+                    <input type="file" id="image" name="image" accept="image/*" onChange={handleForm}
                         className="w-full text-base text-gray-700 mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#ffd814] file:text-[#111] hover:file:bg-[#f7ca00] transition-all cursor-pointer"/>
                 </div>
             </div>

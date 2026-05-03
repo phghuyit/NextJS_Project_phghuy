@@ -13,6 +13,9 @@ export function getOrdersByUser(userId) {
 export function getOrderById(id) {
     return axiosClient.get(`/orders/${id}`);
 }
+export function getOrderItemById(id) {
+    return axiosClient.get(`/getByOrderId/${id}`);
+}
 export function saveOrder(data) {
     return axiosClient.post("/saveOrder", data);
 }
@@ -62,12 +65,4 @@ const orderService = {
     delete: deleteOrder
 };
 
-<<<<<<< HEAD
-export const updateStatusOrder = async (id,data) => {
-    return axiosClient.patch(`/updateStatusOrder/${id}`,data);
-};
-
-export default orderServices;
-=======
 export default orderService;
->>>>>>> a296bc6d69093b06f95be3b4f1a1f590c2792f99

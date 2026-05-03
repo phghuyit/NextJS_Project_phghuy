@@ -1,5 +1,5 @@
 "use client"
-  
+
 import Pagination from "@/components/common/Pagination";
 import ProductList from "@/components/shop/product/ProductList";
 import { getProductByCategoryId } from "@/services/productServices";
@@ -13,43 +13,43 @@ export default function Page() {
   const [page, setPage] = useState(1);
   const [cat, setCat] = useState();
 
-  const {categoryId} = useParams();
+  const { categoryId } = useParams();
 
   useEffect(() => {
     async function fetchProd() {
       try {
-          setLoading(true);
-          const api = await getProductByCategoryId(categoryId);
-          setProds(api.data) ;
-          
-      } catch(err) {
-         console.error("Failed to fetch products by category:", err);
-         setError("Không thể tải sản phẩm.");
+        setLoading(true);
+        const api = await getProductByCategoryId(categoryId);
+        setProds(api.data);
+
+      } catch (err) {
+        console.error("Failed to fetch products by category:", err);
+        setError("Không thể tải sản phẩm.");
       } finally {
         setLoading(false);
       }
     }
-     async function fetchCat() {
+    async function fetchCat() {
       try {
-          setLoading(true);
-          const api = await categoryServices.getCatById(categoryId);
-          console.log(api);
-          setCat(api.category_name);
-          
-      } catch(err) {
-         console.error("Failed to fetch category:", err);
-         setError("Không thể tải danh muc.");
+        setLoading(true);
+        const api = await categoryServices.getCatById(categoryId);
+        console.log(api);
+        setCat(api.category_name);
+
+      } catch (err) {
+        console.error("Failed to fetch category:", err);
+        setError("Không thể tải danh muc.");
       } finally {
         setLoading(false);
       }
     }
-    
+
     if (categoryId) {
       fetchProd();
       fetchCat();
     }
   }, [page, categoryId]);
-  
+
   if (error) {
     return (<h1>{error}</h1>);
   }
@@ -68,11 +68,11 @@ export default function Page() {
   return (
     <div className="w-[90%] mt-6">
       <h1 className="mt-3 text-4xl font-bold text-gray-900 capitalize">
-          Sách thuộc thể loại: {cat}
-        </h1>
+        Sách thuộc thể loại: {cat}
+      </h1>
       {products && products.length > 0 ? (
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 m-12">
-          <ProductList products={products}/>
+          <ProductList products={products} />
         </div>
       ) : (
         <div className="m-12 text-center text-lg text-gray-500 font-medium py-16 bg-gray-50 rounded-lg border border-dashed border-gray-300">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import productServices, { getTrashedProducts } from "@/services/productServices";
+import brandService from "@/services/brandServices";
 import Pagination from "@/components/common/Pagination";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +9,7 @@ import { faRotate, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 
 export default function TrashPage() {
-  const [products, setProducts] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -18,21 +18,21 @@ export default function TrashPage() {
   const PAGES_SIZE = 5;
 
   useEffect(() => {
-    fetchTrashedProducts();
+    fetchTrashedBrands();
   }, [page]);
 
-  async function fetchTrashedProducts() {
+  async function fetchTrashedBrands() {
     setLoading(true);
     try {
-      const api = await getTrashedProducts({
+      const api = await brandService.getTrashedByPageSize({
         "pagination[page]": page,
         "pagination[pageSize]": PAGES_SIZE,
       });
-      setProducts(api?.data || api || []);
+      setBrands(api?.data || api || []);
       setPagination(api?.pagination || api?.meta || null);
     } catch (err) {
       console.log("Phát hiện lỗi: " + err);
-      setError("Lỗi không tải được thùng rác sản phẩm.");
+      setError("Lỗi không tải được thùng rác tác giả.");
     } finally {
       setLoading(false);
     }
@@ -44,29 +44,29 @@ export default function TrashPage() {
   }
 
   async function handleRestore(id) {
-    if (!window.confirm("Bạn có chắc chắn muốn khôi phục sản phẩm này?")) return;
+    if (!window.confirm("Bạn có chắc chắn muốn khôi phục tác giả này?")) return;
     try {
-      await productServices.restore(id);
-      if (confirm("Khôi phục thành công! Bạn có muốn quay lại trang quản lý sản phẩm?")) {
-        router.back();
+      await brandService.restore(id);
+      if (confirm("Khôi phục thành công! Bạn có muốn quay lại trang quản lý tác giả?")) {
+        router.push("/admin/brands");
       } else {
-        fetchTrashedProducts();
+        fetchTrashedBrands();
       }
     } catch (error) {
       console.error(error);
-      alert("Có lỗi xảy ra khi khôi phục.");
+      alert("Có lỗi xảy ra khi khôi phục: " + error.message);
     }
   }
 
   async function handleForceDelete(id) {
     if (!window.confirm("CẢNH BÁO: Bạn có chắc chắn muốn xóa vĩnh viễn? Hành động này không thể hoàn tác!")) return;
     try {
-      await productServices.destroy(id);
+      await brandService.destroy(id);
       alert("Xóa vĩnh viễn thành công!");
-      setProducts(products.filter(e=>e.id!=id))
+      setBrands(brands.filter(e => e.id != id));
     } catch (error) {
       console.error(error?.message);
-      alert("Có lỗi xảy ra khi xóa vĩnh viễn.");
+      alert("Có lỗi xảy ra khi xóa vĩnh viễn: " + error.message);
     }
   }
 
@@ -83,44 +83,44 @@ export default function TrashPage() {
       <nav className="flex items-center space-x-2 text-sm font-medium text-gray-500 mb-6">
         <Link href="/admin" className="hover:text-blue-600 transition-colors">Trang Chủ</Link>
         <span>/</span>
-        <Link href="/admin/products" className="hover:text-blue-600 transition-colors">Quản Lý Sản Phẩm</Link>
+        <Link href="/admin/brands" className="hover:text-blue-600 transition-colors">Quản Lý Tác Giả</Link>
         <span>/</span>
         <span className="text-red-600 font-semibold">Thùng Rác</span>
       </nav>
 
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl uppercase font-bold text-gray-800">Thùng Rác Sản Phẩm</h1>
+        <h1 className="text-4xl uppercase font-bold text-gray-800">Thùng Rác Tác Giả</h1>
         <Link
-          href="/admin/products"
+          href="/admin/brands"
           className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors"
         >
           Quay Lại
         </Link>
       </div>
 
-      {loading && !products.length ? (
+      {loading && !brands.length ? (
         <div className="text-center text-xl font-bold my-12">Đang tải Thùng Rác...</div>
       ) : (
         <div className="bg-white shadow rounded-lg overflow-hidden border border-gray-200">
-          {products.length === 0 ? (
+          {brands.length === 0 ? (
             <div className="text-center py-10 text-gray-500 font-medium">Thùng rác trống.</div>
           ) : (
             <table className="w-full">
               <thead className="bg-gray-100 border-b">
                 <tr>
                   <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">ID</th>
-                  <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Tên Sản Phẩm</th>
-                  <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Số Lượng</th>
+                  <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Tên Tác Giả</th>
+                  <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Slug</th>
                   <th className="py-3 px-4 text-left font-semibold text-gray-600 uppercase">Ngày Xóa</th>
                   <th className="py-3 px-4 text-center font-semibold text-gray-600 uppercase">Hành Động</th>
                 </tr>
               </thead>
               <tbody>
-                {products.map((row) => (
+                {brands.map((row) => (
                   <tr key={row.id} className="border-b text-gray-700 transition duration-200 hover:bg-orange-50">
                     <td className="py-3 px-4 text-gray-800">{row.id}</td>
-                    <td className="py-3 px-4 text-gray-800">{row.product_name}</td>
-                    <td className="py-3 px-4 text-gray-800">{row.qty}</td>
+                    <td className="py-3 px-4 text-gray-800">{row.name}</td>
+                    <td className="py-3 px-4 text-gray-800">{row.slug}</td>
                     <td className="py-3 px-4 text-gray-800 text-sm">
                       {row.deleted_at ? new Date(row.deleted_at).toLocaleString() : "N/A"}
                     </td>
@@ -129,12 +129,14 @@ export default function TrashPage() {
                         <button
                           onClick={() => handleRestore(row.id)}
                           className="rounded-lg border border-gray-200 px-3 py-2 transition-colors duration-300 hover:border-red-300 hover:bg-red-50 cursor-pointer"
+                          title="Khôi phục"
                         >
                           <FontAwesomeIcon icon={faRotate} className="w-6 h-6 text-teal-400" />
                         </button>
                         <button
                           onClick={() => handleForceDelete(row.id)}
                           className="rounded-lg border border-gray-200 px-3 py-2 transition-colors duration-300 hover:border-red-300 hover:bg-red-50 cursor-pointer"
+                          title="Xóa vĩnh viễn"
                         >
                           <FontAwesomeIcon icon={faXmark} className="w-6 h-6 text-red-500" />
                         </button>
