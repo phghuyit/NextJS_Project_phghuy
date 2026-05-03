@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import productServices, { getTrashedProducts } from "@/services/productServices";
+<<<<<<< HEAD
+=======
+import AdminTable from "@/components/admin/table/AdminTable";
+>>>>>>> a296bc6d69093b06f95be3b4f1a1f590c2792f99
 import Pagination from "@/components/common/Pagination";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

@@ -5,9 +5,13 @@ import ProductList from "@/components/shop/product/ProductList";
 import { getProductsByPageSize } from "@/services/productServices";
 import { useState,useEffect } from "react";
 import categoryServices from "@/services/categoryService";
+<<<<<<< HEAD
 import { getBrandAll } from "@/services/brandServices";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
+=======
+import { getActiveBrands } from "@/services/brandServices";
+>>>>>>> a296bc6d69093b06f95be3b4f1a1f590c2792f99
 
 export default function Page() {
   const [products,setProds]= useState([]);
@@ -57,7 +61,7 @@ export default function Page() {
         const catRes = await categoryServices.getAll();
         setCategories(catRes?.categories || catRes || []);
         console.log(catRes.categories )
-        const brandRes = await getBrandAll();
+        const brandRes = await getActiveBrands();
         setBrands(brandRes?.data || brandRes || []);
       } catch (err) {
         console.error("Failed to fetch filters:", err);
