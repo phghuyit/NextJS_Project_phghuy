@@ -16,6 +16,7 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEdit, setEdit] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState("");
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -37,6 +38,14 @@ export default function AccountPage() {
     }
   }, [router]);
 
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
+
   const fetchOrders = async (userId) => {
     try {
       setLoading(true);
@@ -52,6 +61,13 @@ export default function AccountPage() {
 
   const handleFormChange = (e) => {
     const { name, value, files } = e.target;
+    if (name === "image") {
+      const nextFile = files && files.length > 0 ? files[0] : null;
+      if (avatarPreview) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+      setAvatarPreview(nextFile ? URL.createObjectURL(nextFile) : "");
+    }
     setForm((prev) => ({
       ...prev,
       [name]: files && files.length > 0 ? files[0] : value,
@@ -67,6 +83,10 @@ export default function AccountPage() {
       birthday: user.birthday || "",
       image: null,
     });
+    if (avatarPreview) {
+      URL.revokeObjectURL(avatarPreview);
+    }
+    setAvatarPreview("");
     setEdit(true);
   };
 
@@ -81,17 +101,24 @@ export default function AccountPage() {
       formData.append("gender", form.gender);
       formData.append("birthday", form.birthday);
 
-      if (form.image instanceof File) {
+      if (form.image && typeof form.image !== 'string') {
         formData.append("image", form.image);
       }
 
-      await userServices.update(user.id, formData);
+      const updatedUserResponse = await userServices.update(user.id, formData);
+      const nextUserFromUpdate =
+        updatedUserResponse?.data || updatedUserResponse?.user || updatedUserResponse;
       const refreshedUser = await userServices.getById(user.id);
-      const nextUser = refreshedUser?.data || refreshedUser?.user || refreshedUser;
+      const nextUser =
+        refreshedUser?.data || refreshedUser?.user || nextUserFromUpdate || refreshedUser;
 
       setUser(nextUser);
       updateAuthUser(nextUser);
       setEdit(false);
+      if (avatarPreview) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+      setAvatarPreview("");
       setForm({
         name: "",
         phone: "",
@@ -103,7 +130,12 @@ export default function AccountPage() {
       alert("Cập nhật thông tin thành công!");
     } catch (err) {
       console.error("Failed to update profile:", err);
-      alert("Không thể cập nhật. Vui lòng thử lại sau.");
+      const validationMessage = err?.errors
+        ? Object.values(err.errors).flat().join("\n")
+        : null;
+      const serverMessage = err?.response?.data?.message || err?.message;
+      alert(validationMessage || serverMessage || "Update failed. Please try again.");
+      return;
     }
   };
 
@@ -119,7 +151,7 @@ export default function AccountPage() {
           <div className="mb-5 flex justify-center">
             <div className="relative h-24 w-24 overflow-hidden rounded-full border border-gray-200 bg-gray-50">
               <Image
-                src={user.image ? getImageSrc(user.image) : "/no-image.jpg"}
+                src={getImageSrc(user.image)}
                 alt={user.name || "Avatar"}
                 fill
                 unoptimized
@@ -145,6 +177,7 @@ export default function AccountPage() {
           <div className={`fixed inset-0 z-20 flex items-center justify-center bg-gray-800/60 ${isEdit ? "" : "hidden"}`}>
             <form
               onSubmit={handleUpdateProfile}
+              encType="multipart/form-data"
               className="bg-white p-8 rounded-lg shadow-xl w-[90%] max-w-md flex flex-col gap-4"
             >
               <h3 className="text-2xl font-bold mb-2 text-gray-800">Cập nhật thông tin</h3>

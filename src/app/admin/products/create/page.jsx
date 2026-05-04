@@ -4,23 +4,23 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import categoryServices from '@/services/categoryService.js';
-import {createProduct} from '@/services/productServices';
+import { createProduct } from '@/services/productServices';
 import standardized from '@/utils/standardized';
 import { getBrandAll } from '@/services/brandServices';
 export default function CreateProductPage() {
     const router = useRouter();
     const inputClass = "border border-gray-300 focus:ring-blue-200 focus:ring-2 focus:border-blue-400 outline-none h-10 px-3 rounded-md w-full text-base duration-300 transition-all";
     const labelClass = "font-bold text-sm text-gray-700 block mb-1";
-    const [loading,setLoad]=useState(false);
-    const [err,setErr]=useState([]);
-    const [cats,setCat]=useState([]);
-    const [brands,setBrand]=useState([]);
-    const [form,setForm]=useState({
+    const [loading, setLoad] = useState(false);
+    const [err, setErr] = useState(null);
+    const [cats, setCat] = useState([]);
+    const [brands, setBrand] = useState([]);
+    const [form, setForm] = useState({
         product_name: '',
         slug: '',
         cat_id: '',
         description: '',
-        image: '' ,
+        image: '',
         price: '',
         brand_id: '',
         qty: '',
@@ -28,8 +28,8 @@ export default function CreateProductPage() {
         is_on_sale: '0',
         sale_price: '0',
     })
-    function handleForm(e){
-        const {name,value,files}=e.target;
+    function handleForm(e) {
+        const { name, value, files } = e.target;
         const val = files && files.length > 0 ? files[0] : value;
 
         if (name === "product_name") {
@@ -47,50 +47,51 @@ export default function CreateProductPage() {
         }
     }
 
-    const handleSubmit= async (e)=>{
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoad(true);
-        try{
+        setErr(null);
+        try {
             const formData = new FormData();
-            Object.entries(form).forEach(([key,value])=>{
-            if (value == null || value === "") return;
+            Object.entries(form).forEach(([key, value]) => {
+                if (value == null || value === '') return;
 
-            if (key === "image") {
-                const file = value?.originFileObj || value;
-                if (file instanceof File || file instanceof Blob) {
-                    formData.append("image", file);
+                if (key === 'image') {
+                    const file = value?.originFileObj || value;
+                    if (file instanceof File || file instanceof Blob) {
+                        formData.append("image", file);
+                    }
+                    return;
                 }
-                return;
-            }
-            formData.append(key, value);
+                formData.append(key, value);
             })
             await createProduct(formData);
-            if(confirm("Tạo sản phẩm thành công có muốn chuyển về trang quản lý sản phẩm?"))
-            router.push("/admin/products"); 
+            if (confirm('Tạo sản phẩm thành công có muốn chuyển về trang quản lý sản phẩm?'))
+                router.push("/admin/products");
             else setLoad(false);
-        }catch(err){
-            console.error("Lỗi: "+err.message);
-            setErr("Lỗi trong quá trình submit form");
+        } catch (error) {
+            setErr(error.message);
+            console.error(error.message);
             setLoad(false);
         }
     }
-    async function fetchCats(){
-        const res=await categoryServices.getAll();
-        if(res){
+    async function fetchCats() {
+        const res = await categoryServices.getAll();
+        if (res) {
             setCat(res.categories);
         }
     };
-    async function fetchBrands(){
-        const res=await getBrandAll();
-        
-        if(res){
+    async function fetchBrands() {
+        const res = await getBrandAll();
+
+        if (res) {
             setBrand(res.data);
         }
     };
-    useEffect(()=>{
+    useEffect(() => {
         fetchCats();
         fetchBrands();
-    },[]);
+    }, []);
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             {loading && (
@@ -117,6 +118,12 @@ export default function CreateProductPage() {
                 </Link>
             </div>
 
+            {err && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-300 rounded-md">
+                    <p className="font-semibold text-red-700 mb-1">Lỗi {err}</p>
+                    
+                </div>
+            )}
             <form className="bg-white p-6 rounded-lg shadow-md" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -189,7 +196,7 @@ export default function CreateProductPage() {
                                 <option key={brand.id} value={brand.id}>{brand.name}</option>
                             ))}
                         </select>
-                    </div> 
+                    </div>
 
                     <div className="md:col-span-2">
                         <label htmlFor="description" className={labelClass}>Mô tả</label>

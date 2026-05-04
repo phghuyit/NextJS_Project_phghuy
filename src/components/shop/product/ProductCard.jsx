@@ -1,7 +1,7 @@
 import formatPrice from "@/utils/formatPrice";
 import Image from "next/image";
 import Link from "next/link";
-const STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL;
+import getImageSrc from "@/utils/getImageSrc";
 
 
 export default function ProductCard({product}){
@@ -11,7 +11,7 @@ export default function ProductCard({product}){
             <div className="border border-transparent duration-200 flex flex-col h-full outline-none p-6 rounded-[5px] shadow text-lg transition hover:border-orange-400 hover:ring-2 hover:ring-orange-100"
         >
                 <div className="relative h-64 w-full self-center">
-                    <Image src={product.image ? `${STORAGE_URL}${product.image}` : "/no-image.png"} alt={product.product_name} className="max-h-full object-contain" fill unoptimized/>
+                    <Image src={getImageSrc(product.image)} alt={product.product_name} className="max-h-full object-contain" fill unoptimized/>
                 </div>
 
 

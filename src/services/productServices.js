@@ -74,19 +74,16 @@ export function getProductByBrandSlug(slug) {
 }
 export function createProduct(data) {
     if (data instanceof FormData) {
-        return axiosClient.post("/products", data, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+        return axiosClient.post("/products", data);
     }
     return axiosClient.post("/products", data);
 }
 
+
 export async function updateProduct(id, data) {
     if (data instanceof FormData) {
         data.append("_method", "PUT");
-        return axiosClient.post(`/products/${id}`, data, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+        return axiosClient.post(`/products/${id}`, data);
     }
     return axiosClient.put(`/products/${id}`, data);
 }

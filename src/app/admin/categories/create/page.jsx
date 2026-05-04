@@ -78,7 +78,7 @@ export default function CreateCategoryPage() {
             if (error.response?.data) {
                 setErr(error.response.data.message || JSON.stringify(error.response.data));
             } else {
-                setErr("Lỗi trong quá trình submit form.");
+                setErr(error.message);
             }
             setLoad(false);
         }
@@ -122,12 +122,12 @@ export default function CreateCategoryPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label htmlFor="category_name" className={labelClass}>Tên Danh Mục</label>
-                        <input type="text" id="category_name" name="category_name" className={inputClass} required onChange={handleForm} value={form.category_name} />
+                        <input type="text" id="category_name" name="category_name" className={inputClass} onChange={handleForm} value={form.category_name} />
                     </div>
 
                     <div>
                         <label htmlFor="slug" className={labelClass}>Slug</label>
-                        <input type="text" id="slug" name="slug" className={inputClass} required onChange={handleForm} value={form.slug} />
+                        <input type="text" id="slug" name="slug" className={inputClass}  onChange={handleForm} value={form.slug} />
                     </div>
 
                     <div>
